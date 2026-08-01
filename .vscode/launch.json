@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Sanad: Launch Agent (Manual Debug)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/agent",
+      "program": "${workspaceFolder}/agent/bin/sanad_agent.dart",
+      "args": [
+        "daemon"
+      ]
+    },
+    {
+      "name": "Sanad: Launch Client (Manual Debug)",
+      "type": "dart",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/client",
+      "program": "${workspaceFolder}/client/lib/main.dart",
+      "flutterMode": "debug",
+      "toolArgs": [
+        "--dart-define-from-file=config/prod.json"
+      ]
+    },
+    {
+      "name": "Sanad: Attach to Running Client",
+      "type": "dart",
+      "request": "attach",
+      "cwd": "${workspaceFolder}/client",
+      "vmServiceUri": "${command:dart.promptForVmService}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Sanad: Launch Full Pair (Manual Debug)",
+      "configurations": [
+        "Sanad: Launch Agent (Manual Debug)",
+        "Sanad: Launch Client (Manual Debug)"
+      ],
+      "stopAll": true
+    }
+  ]
+}

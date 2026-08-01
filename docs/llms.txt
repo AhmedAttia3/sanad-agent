@@ -1,0 +1,130 @@
+# Sanad Project Codebase Index
+
+> This file is the machine-readable index for LLMs and coding agents, conforming to https://llmstxt.org. It lists all active documentation and runtime system contracts.
+
+Install: `fvm flutter run` for the UI Client, or `fvm dart run` for the Local Daemon.
+Repo: https://github.com/EastStarAI/sanad-agent
+
+## System Rules & Runtime Contracts
+
+These files are mandatory execution contracts governing subdirectories. Always read them before editing files in their folders.
+
+- [AGENTS](./AGENTS.md): Rules governing ..
+- [AGENTS](./agent/AGENTS.md): Rules governing ./agent.
+- [AGENTS](./agent/bin/AGENTS.md): Rules governing ./agent/bin.
+- [AGENTS](./agent/lib/capabilities/AGENTS.md): Rules governing ./agent/lib/capabilities.
+- [AGENTS](./agent/lib/capabilities/mcp/AGENTS.md): Rules governing ./agent/lib/capabilities/mcp.
+- [AGENTS](./agent/lib/capabilities/permissions/AGENTS.md): Rules governing ./agent/lib/capabilities/permissions.
+- [AGENTS](./agent/lib/capabilities/runtime/AGENTS.md): Rules governing ./agent/lib/capabilities/runtime.
+- [AGENTS](./agent/lib/capabilities/tools/AGENTS.md): Rules governing ./agent/lib/capabilities/tools.
+- [AGENTS](./agent/lib/core/AGENTS.md): Rules governing ./agent/lib/core.
+- [AGENTS](./agent/lib/engine/AGENTS.md): Rules governing ./agent/lib/engine.
+- [AGENTS](./agent/lib/engine/adapters/AGENTS.md): Rules governing ./agent/lib/engine/adapters.
+- [AGENTS](./agent/lib/engine/runtime/AGENTS.md): Rules governing ./agent/lib/engine/runtime.
+- [AGENTS](./agent/lib/evolution/AGENTS.md): Rules governing ./agent/lib/evolution.
+- [AGENTS](./agent/lib/evolution/db/AGENTS.md): Rules governing ./agent/lib/evolution/db.
+- [AGENTS](./agent/lib/evolution/db/runtime/AGENTS.md): Rules governing ./agent/lib/evolution/db/runtime.
+- [AGENTS](./agent/lib/evolution/memory/AGENTS.md): Rules governing ./agent/lib/evolution/memory.
+- [AGENTS](./agent/lib/infrastructure/AGENTS.md): Rules governing ./agent/lib/infrastructure.
+- [AGENTS](./agent/lib/interfaces/AGENTS.md): Rules governing ./agent/lib/interfaces.
+- [AGENTS](./agent/lib/interfaces/models/AGENTS.md): Rules governing ./agent/lib/interfaces/models.
+- [AGENTS](./agent/lib/interfaces/platforms/AGENTS.md): Rules governing ./agent/lib/interfaces/platforms.
+- [AGENTS](./agent/lib/interfaces/platforms/sanad_gateway/AGENTS.md): Rules governing ./agent/lib/interfaces/platforms/sanad_gateway.
+- [AGENTS](./agent/lib/interfaces/runtime/AGENTS.md): Rules governing ./agent/lib/interfaces/runtime.
+- [AGENTS](./agent/lib/plugins/AGENTS.md): Rules governing ./agent/lib/plugins.
+- [AGENTS](./client/AGENTS.md): Rules governing ./client.
+- [AGENTS](./client/lib/core/AGENTS.md): Rules governing ./client/lib/core.
+- [AGENTS](./client/lib/features/AGENTS.md): Rules governing ./client/lib/features.
+- [AGENTS](./client/lib/features/auth/AGENTS.md): Rules governing ./client/lib/features/auth.
+- [AGENTS](./client/lib/features/conversations/AGENTS.md): Rules governing ./client/lib/features/conversations.
+- [AGENTS](./client/lib/features/conversations/data/AGENTS.md): Rules governing ./client/lib/features/conversations/data.
+- [AGENTS](./client/lib/features/conversations/domain/AGENTS.md): Rules governing ./client/lib/features/conversations/domain.
+- [AGENTS](./client/lib/features/conversations/presentation/AGENTS.md): Rules governing ./client/lib/features/conversations/presentation.
+- [AGENTS](./client/lib/features/devices/AGENTS.md): Rules governing ./client/lib/features/devices.
+- [AGENTS](./client/lib/features/home/AGENTS.md): Rules governing ./client/lib/features/home.
+- [AGENTS](./client/lib/features/mcp/AGENTS.md): Rules governing ./client/lib/features/mcp.
+- [AGENTS](./client/lib/features/provider_setup/AGENTS.md): Rules governing ./client/lib/features/provider_setup.
+- [AGENTS](./client/lib/features/settings/AGENTS.md): Rules governing ./client/lib/features/settings.
+- [AGENTS](./client/lib/features/voice/AGENTS.md): Rules governing ./client/lib/features/voice.
+- [AGENTS](./client/lib/infrastructure/AGENTS.md): Rules governing ./client/lib/infrastructure.
+- [MODIFY SANAD-AGENTAGENTLIBCAPABILITIESAGENTS](./graphify-out/obsidian/MODIFY sanad-agentagentlibcapabilitiesAGENTS.md): Rules governing ./graphify-out/obsidian/MODIFY sanad-agentagentlibcapabilitiesworkspace root.
+- [MODIFY SANAD-AGENTCLIENTAGENTS](./graphify-out/obsidian/MODIFY sanad-agentclientAGENTS.md): Rules governing ./graphify-out/obsidian/MODIFY sanad-agentclientworkspace root.
+- [MODIFY SANADAGENT-LOCALAGENTS](./graphify-out/obsidian/MODIFY sanadagent-localAGENTS.md): Rules governing ./graphify-out/obsidian/MODIFY sanadagent-localworkspace root.
+- [AGENTS](./scripts/sanad_dev/AGENTS.md): Rules governing ./scripts/sanad_dev.
+
+## Functional Features & Architecture Guides
+
+- [خارطة محرك ومنطق الوكلاء](docs/agent_engine/MOC.md): فهرس وخارطة وثائق منطق وهندسة الوكلاء، سجل الأوامر النظامية، ومواصفات أدوات الذكاء الاصطناعي.
+- [Capability Runtime Architecture](docs/agent_engine/capability_runtime.md): Architecture of tool specifications, runtime catalog assembly, permissions, MCP, workspace/web services, skills, and platform tools.
+- [Codex Responses Runtime Design](docs/agent_engine/codex_responses_runtime_design.md): تصميم codec وحالة الاستمرارية والبث والاستكمال لمحول Codex Responses في Sanad.
+- [LLM Adapter Runtime Contract](docs/agent_engine/llm_adapter_runtime_contract.md): عقد خيارات طلب النموذج، reasoning القابل للعرض، وحالة المزود اللازمة للاستكمال.
+- [خارطة العمليات والأتمتة والنشر](docs/operations/MOC.md): فهرس وخارطة وثائق مسارات الأتمتة n8n، إعدادات الحاويات Docker، ومخططات النشر والتشغيل.
+- [Brand Asset Generation and Platform Handoff](docs/operations/brand_asset_handoff.md): Canonical Sanad identity sources, generated platform assets, review-ready community deliverables, and live-surface ownership.
+- [Code Signing Policy](docs/operations/code_signing_policy.md): Public artifact trust, protected signing, role separation, verification, and revocation policy for Sanad releases.
+- [Community and Contribution Governance](docs/operations/community_governance.md): Operating model for Discord, Discussions, Issues, plans, pull requests, labels, protected review, and public-repository handoff.
+- [Develop Sanad Agent](docs/operations/developer_guide.md): Set up the public repository, run the Dart agent and Flutter client, test changes, and use isolated development runtimes.
+- [Release, Signing, and Deployment Architecture](docs/operations/release_and_signing.md): The stable release pipeline, protected signing boundaries, artifact publication, and live-release handoff.
+- [Install and Use Sanad Agent](docs/operations/user_guide.md): Install the Sanad client and agent, connect local or remote devices, configure providers, manage the service, and update Sanad.
+- [خارطة متطلبات المنتج والأعمال](docs/product/MOC.md): فهرس وخارطة وثائق متطلبات المنتج، تجربة المستخدم، والأعمال الاستراتيجية للمشروع.
+- [Sanad Client Interface](docs/product/client_interface.md): Current user experience for devices, workspaces, conversations, providers, permissions, and active agent interactions.
+- [Conversation Navigation UX Spec](docs/product/conversation_navigation_ux_spec.md): UX specifications for conversation navigation destinations, history, deletion, and restart recovery.
+- [Sanad Agent Features](docs/product/features.md): A user-facing guide to Sanad Agent's local, remote, provider, workspace, tool, and interaction capabilities.
+- [Message Edit and Retry UX](docs/product/message_edit_retry_ux.md): Specification for inline edit and retry of the latest user messages in the timeline.
+- [Sanad Agent Product Definition](docs/product/prd_sanad_agent.md): Current product scope, users, components, operating modes, capabilities, and boundaries.
+- [Sanad Agent Identity and Scope](docs/product/project_identity_and_scope.md): Public identity, open-source scope, hosted-service boundary, and project naming.
+- [Provider Account Usage Limits](docs/product/provider_account_usage_limits.md): Product behavior for instance-scoped provider usage windows, freshness, errors, and reset-credit controls.
+- [Settings Hub](docs/product/settings_hub.md): Information architecture, scope semantics, and device-management UX for Sanad's unified Settings destination.
+- [خارطة الجودة والدعم والصيانة](docs/qa_maintenance/MOC.md): فهرس وخارطة خطط الفحص وحالات الاختبار، أدلة حل المشكلات التقنية، ودعم التشغيل وصيانة المنصة.
+- [Clarifying Question RTL QA](docs/qa_maintenance/clarifying_question_rtl_qa.md): Verification matrix for Arabic directionality and platform-aware multiline behavior in clarifying questions.
+- [Community Governance QA](docs/qa_maintenance/community_governance_qa.md): Static and live verification matrix for labels, templates, contribution skills, protected CI, Discord routing, and public-repository governance.
+- [Conversation Cache and Draft Recovery QA](docs/qa_maintenance/conversation_cache_recovery_qa.md): QA scenarios for persistent conversation snapshots, draft acceptance, pagination recovery, cleanup, and lifecycle flush behavior.
+- [Conversation Event Live/History Parity QA](docs/qa_maintenance/conversation_event_parity_qa.md): Focused verification for model-step segmentation, tool identity, opaque event IDs, and canonical history hydration.
+- [Conversation Navigation — QA Recovery Matrix](docs/qa_maintenance/conversation_navigation_recovery_matrix.md): QA verification and recovery scenarios for conversation navigation, history, and deletion.
+- [Device Name Editing QA](docs/qa_maintenance/device_name_editing_qa.md): QA scenarios and test matrices for verifying device renaming.
+- [Device Workspace Sidebar QA](docs/qa_maintenance/device_workspace_sidebar_qa.md): Focused QA coverage for the Plan 32c device-scoped sidebar, including pagination, cache-first rendering, responsive layout, accessibility, and live ordering.
+- [Live Context Usage Indicator QA](docs/qa_maintenance/live_context_usage_indicator_qa.md): Regression matrix for latest provider usage, cached-input visibility, tool-loop updates, and history restoration.
+- [Memory Tool Reliability QA](docs/qa_maintenance/memory_tool_reliability.md): Regression matrix for compact memory results, atomic batches, file safety, bounded recovery, and frozen prompt snapshots.
+- [Message Edit and Retry QA Matrix](docs/qa_maintenance/message_edit_retry_qa.md): Quality Assurance matrix and test cases for the message edit and retry flow.
+- [New Conversation, Composer, and App Bar QA](docs/qa_maintenance/new_conversation_composer_app_bar_qa.md): Focused Plan 32d scenarios for unified composition, device-scoped drafts, responsive actions, and atomic session presentation.
+- [Plan 30 Runtime Recovery Matrix](docs/qa_maintenance/plan30_runtime_recovery_matrix.md): Focused QA ownership for runtime recovery, route confirmation, reconnect hydration, and never-trapped-session behavior.
+- [Provider Account Usage Limits QA Matrix](docs/qa_maintenance/provider_account_usage_limits_qa.md): Regression coverage for provider-instance usage parsing, protocol isolation, freshness, stale responses, and card presentation.
+- [Plan 29 Provider Setup Regression Matrix](docs/qa_maintenance/provider_setup_plan29_regression_matrix.md): Regression coverage targets for the instance-first provider setup runtime.
+- [Release Verification Matrix](docs/qa_maintenance/release_verification.md): Required local and hosted evidence for Sanad release, signing, installation, update, and rollback.
+- [Runtime Source Switch QA](docs/qa_maintenance/runtime_source_switch_qa.md): Regression matrix for moving one active sanad-dev pair between source worktrees without changing its durable runtime identity.
+- [sanad-dev Runtime Ownership QA](docs/qa_maintenance/sanad_dev_runtime_ownership_qa.md): Regression matrix for managed launcher ownership, reconciliation, clone isolation, and continuous source handoff.
+- [Session Title Generation QA](docs/qa_maintenance/session_title_generation_qa.md): Regression coverage for first-exchange background title generation, stale-result rejection, and client synchronization.
+- [Task 31 Authoritative Session State QA Matrix](docs/qa_maintenance/task31_authoritative_session_state_matrix.md): Regression coverage for durable execution snapshots, per-session attention isolation, reconnect recovery, and authoritative route failover UX.
+- [Task 36 Authoritative Steer, Queue, and Stop Recovery QA Matrix](docs/qa_maintenance/task36_authoritative_steer_queue_stop_recovery_matrix.md): Regression coverage for daemon-owned delivery classification, pending-steer cancellation, queue mutations, lossless Stop draft recovery, and first-writer restart claims.
+- [Remote Workspace Folder Management QA](docs/qa_maintenance/workspace_folder_management_qa.md): Regression matrix for create, rename, delete, validation, correlation, refresh, and error behavior in the remote workspace picker.
+- [Workspace Identity and Change Path QA](docs/qa_maintenance/workspace_identity_relocation_qa.md): Regression coverage for UUID migration, missing folders, rename, Change Path, cache reconciliation, and scoped Settings routing.
+- [خارطة المعمارية والرمز التقني](docs/technical/MOC.md): فهرس وخارطة وثائق المعمارية البرمجية، تصميم قواعد البيانات، وواجهات برمجة التطبيقات.
+- [مواصفات قاعدة البيانات المحلية للوكيل](docs/technical/agent_database_schema.md): تصميم جداول قاعدة البيانات المحلية (SQLite - state.db) التابعة للوكيل sanad-agent لحفظ الجلسات وتفاصيل التعليق.
+- [Agent Interface and Runtime Architecture](docs/technical/agent_interface_runtime.md): Architecture of gateway routing, active-run orchestration, Sanad protocol translation, recovery, and local/cloud platform adapters.
+- [معمارية تشغيل الوكيل المحلي](docs/technical/agent_runtime.md): تصميم محرك تشغيل الوكيل (sanad-agent) وتركيب موجه النظام (System Prompt) للـ KV-Cache والتأمين الأمني.
+- [Background Terminal Task Runtime](docs/technical/background_terminal_task_runtime.md): العقد التقني للمهام الطرفية الخلفية المملوكة، والنقل الذري من الجولة، والـPTY والمخرجات، والإيقاظ، والتفاعل الآمن، والتعافي.
+- [Client Portal Authentication](docs/technical/client_authentication.md): Portal-owned login, polling, refresh, credential persistence, and platform presentation architecture for Sanad clients.
+- [Client Conversation Cache Schema](docs/technical/client_conversation_cache_schema.md): Ownership, persistence schema, pagination rules, draft correlation, and stable consumer APIs for the Flutter conversation cache.
+- [Client Conversation Navigation Runtime](docs/technical/client_conversation_navigation.md): Technical design for device-scoped sidebar projection, atomic history swaps, deletion fallback, and route synchronization.
+- [Client Local Daemon Control](docs/technical/client_local_daemon_control.md): Architecture for source and standalone daemon lifecycle control from the Flutter desktop client.
+- [بروتوكولات الاتصال ونظام نقل الأحداث](docs/technical/communication_protocols.md): توثيق بروتوكول Socket.IO ونقل الأحداث والمهام وطلبات التعليق (Suspension) مع العميل.
+- [مواصفات نظام التصميم والمكونات المرئية للمشاريع](docs/technical/design_system.md): توثيق شامل للألوان، الخطوط، الهيكل البنائي والواجهات التفاعلية المشتركة لمشاريع Sanad (التطبيق الرئيسي، صفحة الهبوط، ولوحة التحكم).
+- [Device Runtime Settings Protocol](docs/technical/device_runtime_settings_protocol.md): Unified local/cloud protocol commands, validation, persistence, and secret-handling rules for device settings.
+- [Hosted Services Boundary](docs/technical/hosted_services_boundary.md): Ownership and compatibility boundary between the open-source Sanad Agent clients and EastStar AI hosted services.
+- [Message Turn Replay Protocol](docs/technical/message_turn_replay_protocol.md): Technical specification and protocols governing historical message turn replay and recovery.
+- [بروتوكول مزودي نماذج اللغة](docs/technical/provider_protocol.md): بروتوكول إعداد مزودي LLM والمصادقة والتخزين واختيار النموذج في Sanad Agent.
+- [Reasoning, Thoughts, and Final Answer Separation](docs/technical/reasoning_thoughts_separation.md): Protocol, adapter normalization, history, and state for assistant surfaces. Streaming text shares the final-answer Markdown look; provider reasoning is a transient live-only row never rebuilt from history.
+- [Run Cancellation and Process Ownership](docs/technical/run_cancellation_and_process_ownership.md): العقد التقني لإلغاء جولة الوكيل إلغاءً محدود الزمن، ومقاطعة المزود والأداة، وامتلاك شجرة العمليات، وتثبيت نتيجة نهائية متطابقة حيًا وتاريخيًا.
+- [sanad-dev Runtime Ownership](docs/technical/sanad_dev_runtime_ownership.md): Managed launcher leases, workspace/client ownership, clone isolation, reconciliation, and continuous source handoff.
+- [Release and Update Architecture](docs/technical/update_architecture.md): The shared release manifest and the update ownership of the Sanad agent and client on every runtime.
+- [Experimental Realtime Voice](docs/technical/voice_streaming.md): Current experimental Gemini Realtime voice path, transports, audio format, interruption behavior, and release boundaries.
+- [Remote Workspace Folder Mutation Protocol](docs/technical/workspace_folder_mutation_protocol.md): Daemon-owned protocol and validation model for creating, renaming, and deleting folders while selecting a remote workspace.
+- [Workspace Identity, Rename, and Change Path Protocol](docs/technical/workspace_identity_protocol.md): Stable workspace UUID, availability projection, rename, path repair, and client routing contract.
+- [Implementation Plans](docs/plans/): Architectural blueprints, milestones, and step-by-step implementation plans for project development phases.
+
+## Reference Projects
+
+- [Reference Projects](refrence_projects/): Directory containing reference projects for development inspiration.
+
+## Historical & Legacy Reference (Optional)
+
+- [Archived Documentation](docs/archive/): Obsolete plans, drafts, and legacy specifications archived chronologically.

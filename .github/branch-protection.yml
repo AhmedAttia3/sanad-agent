@@ -1,0 +1,31 @@
+# SANAD-11 applies this local manifest after the public repository exists.
+repository:
+  allow_squash_merge: true
+  allow_merge_commit: false
+  allow_rebase_merge: false
+  delete_branch_on_merge: true
+branch: main
+protection:
+  required_status_checks:
+    strict: true
+    contexts:
+      - All required checks pass
+  enforce_admins: true
+  required_pull_request_reviews:
+    required_approving_review_count: 0
+    require_code_owner_reviews: false
+    dismiss_stale_reviews: false
+  required_conversation_resolution: true
+  allow_force_pushes: false
+  allow_deletions: false
+  block_creations: false
+  lock_branch: false
+transition_when_independent_maintainer_joins:
+  required_approving_review_count: 1
+  require_code_owner_reviews: true
+emergency_bypass:
+  actor: AhmedAttia3
+  allowed_reasons:
+    - urgent security incident
+    - urgent release recovery
+  evidence: Follow-up Issue or pull request with reason and verification

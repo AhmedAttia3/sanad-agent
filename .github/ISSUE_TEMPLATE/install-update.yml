@@ -1,0 +1,51 @@
+name: Installation or update problem
+description: Report a reproducible installer, package, or updater failure
+title: "bug(install): "
+labels: ["needs-triage", "type/bug", "comp/install-update"]
+body:
+  - type: markdown
+    attributes:
+      value: Remove tokens, usernames, personal paths, private hostnames, and user content before sharing command output.
+  - type: dropdown
+    id: method
+    attributes:
+      label: Installation or update method
+      options: [Official installer, Release archive, Install script, In-app update, Agent CLI update, Source with FVM, Other]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Current and target version
+      placeholder: 1.0.0 -> 1.0.1
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Operating system and architecture
+      placeholder: Windows 11 x64
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Redacted command and exact error
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps already tried
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety checks
+      options:
+        - label: I verified the artifact came from the official project origin.
+          required: true
+        - label: I removed secrets, personal paths, user content, and private hostnames.
+          required: true

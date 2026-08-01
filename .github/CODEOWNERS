@@ -1,0 +1,13 @@
+# Initial single-maintainer ownership. Move general ownership to a maintainer
+# team when an independent maintainer joins; keep explicit sensitive ownership.
+* @AhmedAttia3
+
+/.github/ @AhmedAttia3
+/release/ @AhmedAttia3
+/agent/lib/core/auth/ @AhmedAttia3
+/agent/lib/core/update/ @AhmedAttia3
+/client/release/ @AhmedAttia3
+/scripts/install.sh @AhmedAttia3
+/scripts/install.ps1 @AhmedAttia3
+/SECURITY.md @AhmedAttia3
+/docs/operations/code_signing_policy.md @AhmedAttia3

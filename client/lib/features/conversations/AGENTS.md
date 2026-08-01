@@ -1,0 +1,34 @@
+# Conversations Feature Contract
+
+## Scope
+This contract applies to `client/lib/features/conversations/`.
+
+## Canonical Flow
+`UI -> Conversation Cubit -> Conversation Repository -> ManagedConversationClientRegistry -> SocketConversationClient -> ConversationCommandGateway -> SanadSocketService -> Runtime`
+
+Incoming events follow:
+
+`Transport -> EventRouter -> Conversation Client -> UnifiedDeviceMapper -> DeviceConversationStore -> Presentation`
+
+- Presentation must never bypass the repository/client chain or parse transport payloads.
+- Preserve exactly one managed conversation client per device.
+- Reverse tool execution and tool results remain transport/runtime concerns; presentation never owns that protocol.
+
+## Session Identity
+- Represent sessions with `Session` from `client/lib/features/conversations/domain/models/session.dart`.
+- A session may carry `deviceId` for routing context but must not carry agent/device runtime-type discriminators.
+- Route commands by explicit `device_id`; do not reintroduce type-based routing.
+- Create the session eagerly before the first dispatch, with or without a workspace, then activate and select it. Do not send client-generated placeholder session ids to `think`.
+- Mark an automatically derived first-message title as placeholder ownership; explicit user titles remain final.
+- Immediately synchronize `SessionCubit.selectedSession` after local session creation; do not wait for the remote `session_created` event.
+
+## Runtime Authority
+- The daemon alone classifies automatic delivery, resolves queue/steer intent, owns execution and recovery snapshots, and confirms provider/model routes.
+- Do not infer authoritative work from presentation flags, create optimistic queue/timeline rows, or clear recovery state before daemon confirmation.
+- Session state, drafts, processing, attention, suspension, and recovery remain isolated by device and session identity.
+- Raw `request_id` is the wire identity. Display prefixes must never become transport ids.
+
+## Provider and Capability Boundary
+- Device capabilities contain runtime feature flags and lightweight supported-option lists; they are not provider model catalogs.
+- Provider/model selection must use daemon-owned provider runtime surfaces.
+- Never render an internal provider-instance UUID as a user-facing provider name; resolve daemon-owned display metadata and preserve the previous display value during temporary lookup misses.

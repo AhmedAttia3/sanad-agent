@@ -1,0 +1,141 @@
+name: Deploy prepared release assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing immutable GitHub Release tag
+        required: true
+        default: v1.0.0
+      release_run_id:
+        description: Successful release workflow run containing private Web handoff artifacts
+        required: true
+      deploy_web:
+        type: boolean
+        default: false
+      deploy_updates:
+        type: boolean
+        default: false
+      deploy_installers:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  attestations: read
+
+concurrency:
+  group: production-assets
+  cancel-in-progress: false
+
+jobs:
+  web:
+    if: inputs.deploy_web == true
+    runs-on: ubuntu-24.04
+    environment: web-production
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.release_tag }}
+      - name: Configure pinned SSH host
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KEY" > "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
+      - name: Fetch attested Web artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download "${{ inputs.release_run_id }}" \
+            --name stable-release-candidate \
+            --dir download
+          web_artifact="$(find download -maxdepth 1 \
+            -name 'sanad-client-*-web-universal.tar.gz' -print -quit)"
+          test -n "$web_artifact"
+          gh attestation verify "$web_artifact" \
+            --repo "${{ github.repository }}"
+          mkdir web
+          tar -xzf "$web_artifact" -C web
+      - name: Atomic Web deployment
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_SSH_USER }}
+        run: |
+          tag="${{ inputs.release_tag }}"
+          rsync -az --delete --delay-updates web/ \
+            "$DEPLOY_USER@$DEPLOY_HOST:/srv/sanad/web/incoming-$tag/"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" \
+            "set -eu; mkdir -p /srv/sanad/web/releases; mv /srv/sanad/web/incoming-$tag /srv/sanad/web/releases/$tag; ln -sfn /srv/sanad/web/releases/$tag /srv/sanad/web/current"
+
+  updates:
+    if: inputs.deploy_updates == true
+    runs-on: ubuntu-24.04
+    environment: updates-production
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.release_tag }}
+      - name: Configure pinned SSH host
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KEY" > "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
+      - name: Fetch verified Appcast
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "${{ inputs.release_tag }}" \
+            --pattern appcast.xml \
+            --pattern SHA256SUMS \
+            --dir download
+          (cd download && sha256sum --check SHA256SUMS --ignore-missing)
+      - name: Atomic Appcast deployment
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_SSH_USER }}
+        run: |
+          tag="${{ inputs.release_tag }}"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" \
+            "mkdir -p /srv/sanad/updates/releases/$tag"
+          rsync -az download/appcast.xml \
+            "$DEPLOY_USER@$DEPLOY_HOST:/srv/sanad/updates/releases/$tag/appcast.xml"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" \
+            "set -eu; ln -sfn /srv/sanad/updates/releases/$tag /srv/sanad/updates/current"
+
+  installers:
+    if: inputs.deploy_installers == true
+    runs-on: ubuntu-24.04
+    environment: installers-production
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.release_tag }}
+      - name: Configure pinned SSH host
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$DEPLOY_KEY" > "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
+      - name: Publish canonical installer sources
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_SSH_USER }}
+        run: |
+          revision="$(git rev-parse HEAD)"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" \
+            "mkdir -p /srv/sanad/install/releases/$revision"
+          rsync -az scripts/install.sh scripts/install.ps1 \
+            "$DEPLOY_USER@$DEPLOY_HOST:/srv/sanad/install/releases/$revision/"
+          ssh "$DEPLOY_USER@$DEPLOY_HOST" \
+            "set -eu; ln -sfn /srv/sanad/install/releases/$revision /srv/sanad/install/current"

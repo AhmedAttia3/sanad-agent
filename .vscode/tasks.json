@@ -1,0 +1,114 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Sanad: Run Managed Full Pair",
+      "type": "process",
+      "command": "fvm",
+      "args": [
+        "dart",
+        "${workspaceFolder}/scripts/sanad_dev.dart",
+        "run"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/client",
+        "env": {
+          "SANAD_DEV_CALLER_DIR": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "runOptions": {
+        "instanceLimit": 1
+      }
+    },
+    {
+      "label": "Sanad: Run Managed Full Pair (Local Only)",
+      "type": "process",
+      "command": "fvm",
+      "args": [
+        "dart",
+        "${workspaceFolder}/scripts/sanad_dev.dart",
+        "run",
+        "--no-cloud"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/client",
+        "env": {
+          "SANAD_DEV_CALLER_DIR": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "runOptions": {
+        "instanceLimit": 1
+      }
+    },
+    {
+      "label": "Sanad: Status",
+      "type": "process",
+      "command": "fvm",
+      "args": [
+        "dart",
+        "${workspaceFolder}/scripts/sanad_dev.dart",
+        "status"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/client",
+        "env": {
+          "SANAD_DEV_CALLER_DIR": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Sanad: Doctor",
+      "type": "process",
+      "command": "fvm",
+      "args": [
+        "dart",
+        "${workspaceFolder}/scripts/sanad_dev.dart",
+        "doctor"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/client",
+        "env": {
+          "SANAD_DEV_CALLER_DIR": "${workspaceFolder}"
+        }
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Sanad: Analyze Agent",
+      "type": "process",
+      "command": "fvm",
+      "args": [
+        "dart",
+        "analyze"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/agent"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Sanad: Analyze Client",
+      "type": "process",
+      "command": "fvm",
+      "args": [
+        "flutter",
+        "analyze"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/client"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

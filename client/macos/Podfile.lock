@@ -1,0 +1,90 @@
+PODS:
+  - audio_session (0.0.1):
+    - FlutterMacOS
+  - auto_updater_macos (0.0.1):
+    - FlutterMacOS
+    - Sparkle
+  - file_selector_macos (0.0.1):
+    - FlutterMacOS
+  - FlutterMacOS (1.0.0)
+  - macos_window_utils (1.0.0):
+    - FlutterMacOS
+  - mp_audio_stream (0.0.3):
+    - FlutterMacOS
+  - package_info_plus (0.0.1):
+    - FlutterMacOS
+  - record_macos (1.2.1):
+    - FlutterMacOS
+  - screen_retriever_macos (0.0.1):
+    - FlutterMacOS
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - Sparkle (2.9.3)
+  - url_launcher_macos (0.0.1):
+    - FlutterMacOS
+  - window_manager (0.5.0):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - audio_session (from `Flutter/ephemeral/.symlinks/plugins/audio_session/macos`)
+  - auto_updater_macos (from `Flutter/ephemeral/.symlinks/plugins/auto_updater_macos/macos`)
+  - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - macos_window_utils (from `Flutter/ephemeral/.symlinks/plugins/macos_window_utils/macos`)
+  - mp_audio_stream (from `Flutter/ephemeral/.symlinks/plugins/mp_audio_stream/macos`)
+  - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
+  - record_macos (from `Flutter/ephemeral/.symlinks/plugins/record_macos/macos`)
+  - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
+  - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
+  - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
+
+SPEC REPOS:
+  trunk:
+    - Sparkle
+
+EXTERNAL SOURCES:
+  audio_session:
+    :path: Flutter/ephemeral/.symlinks/plugins/audio_session/macos
+  auto_updater_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/auto_updater_macos/macos
+  file_selector_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  macos_window_utils:
+    :path: Flutter/ephemeral/.symlinks/plugins/macos_window_utils/macos
+  mp_audio_stream:
+    :path: Flutter/ephemeral/.symlinks/plugins/mp_audio_stream/macos
+  package_info_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
+  record_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/record_macos/macos
+  screen_retriever_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos
+  shared_preferences_foundation:
+    :path: Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin
+  url_launcher_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
+  window_manager:
+    :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
+
+SPEC CHECKSUMS:
+  audio_session: 728ae3823d914f809c485d390274861a24b0904e
+  auto_updater_macos: 3e3462c418fe4e731917eacd8d28eef7af84086d
+  file_selector_macos: 3e56eaea051180007b900eacb006686fd54da150
+  FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
+  macos_window_utils: 721df4da91cb4bde7b2b7b6ae93cdead4851118f
+  mp_audio_stream: 6c773f43499f206e814f16a25e70d7d0820a2437
+  package_info_plus: 12f1c5c2cfe8727ca46cbd0b26677728972d9a5b
+  record_macos: ccd7864c9922136e50c2937b21384f0b175922f2
+  screen_retriever_macos: 038d3f7b34a779b06f536842003e41e8ec1fb4b7
+  shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
+  Sparkle: 39dbdf28637f6056fbf5ee6494bdbfae54f49f41
+  url_launcher_macos: 175a54c831f4375a6cf895875f716ee5af3888ce
+  window_manager: e25faf20d88283a0d46e7b1a759d07261ca27575
+
+PODFILE CHECKSUM: 4062a5d7621e35b4f677b9e411c2714a4f99d4c2
+
+COCOAPODS: 1.16.2

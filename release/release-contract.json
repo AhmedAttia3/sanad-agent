@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "version": "1.0.0",
+  "build_number": 1,
+  "tag": "v1.0.0",
+  "channel": "stable",
+  "repository": "EastStarAI/sanad-agent",
+  "artifacts": [
+    {
+      "component": "agent",
+      "platform": "macos",
+      "architecture": "arm64",
+      "format": "executable",
+      "filename": "sanad-agent-1.0.0-macos-arm64",
+      "public": true,
+      "signature_type": "developer-id+notarization+github-attestation"
+    },
+    {
+      "component": "agent",
+      "platform": "macos",
+      "architecture": "x64",
+      "format": "executable",
+      "filename": "sanad-agent-1.0.0-macos-x64",
+      "public": true,
+      "signature_type": "developer-id+notarization+github-attestation"
+    },
+    {
+      "component": "agent",
+      "platform": "linux",
+      "architecture": "x64",
+      "format": "executable",
+      "filename": "sanad-agent-1.0.0-linux-x64",
+      "public": true,
+      "signature_type": "github-attestation"
+    },
+    {
+      "component": "agent",
+      "platform": "windows",
+      "architecture": "x64",
+      "format": "executable",
+      "filename": "sanad-agent-1.0.0-windows-x64.exe",
+      "public": true,
+      "signature_type": "authenticode+github-attestation"
+    },
+    {
+      "component": "client",
+      "platform": "macos",
+      "architecture": "universal",
+      "format": "dmg",
+      "filename": "sanad-client-1.0.0-macos-universal.dmg",
+      "public": true,
+      "signature_type": "developer-id+notarization+sparkle-ed25519"
+    },
+    {
+      "component": "client",
+      "platform": "windows",
+      "architecture": "x64",
+      "format": "exe",
+      "filename": "sanad-client-1.0.0-windows-x64.exe",
+      "public": true,
+      "signature_type": "authenticode+winsparkle-dsa"
+    },
+    {
+      "component": "client",
+      "platform": "linux",
+      "architecture": "x64",
+      "format": "tar.gz",
+      "filename": "sanad-client-1.0.0-linux-x64.tar.gz",
+      "public": true,
+      "signature_type": "github-attestation"
+    },
+    {
+      "component": "client",
+      "platform": "android",
+      "architecture": "universal",
+      "format": "apk",
+      "filename": "sanad-client-1.0.0-android-universal.apk",
+      "public": true,
+      "signature_type": "android-apksigner"
+    },
+    {
+      "component": "client",
+      "platform": "android",
+      "architecture": "universal",
+      "format": "aab",
+      "filename": "sanad-client-1.0.0-android-universal.aab",
+      "public": false,
+      "signature_type": "android-apksigner"
+    },
+    {
+      "component": "client",
+      "platform": "web",
+      "architecture": "universal",
+      "format": "tar.gz",
+      "filename": "sanad-client-1.0.0-web-universal.tar.gz",
+      "public": false,
+      "signature_type": "github-attestation"
+    }
+  ]
+}

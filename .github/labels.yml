@@ -1,0 +1,181 @@
+# Versioned label catalog. Apply with scripts/community/sync_labels.sh.
+labels:
+  - name: type/bug
+    color: d73a4a
+    description: Confirmed or reported incorrect behavior
+    group: type
+  - name: type/feature
+    color: 1d76db
+    description: New or materially expanded product behavior
+    group: type
+  - name: type/docs
+    color: 0075ca
+    description: Documentation-only work
+    group: type
+  - name: type/security
+    color: b60205
+    description: Publicly safe security hardening work
+    group: type
+  - name: type/performance
+    color: fbca04
+    description: Performance or resource-use improvement
+    group: type
+  - name: type/refactor
+    color: c5def5
+    description: Internal restructuring without intended behavior change
+    group: type
+  - name: type/test
+    color: bfdadc
+    description: Test coverage or test-infrastructure work
+    group: type
+  - name: type/maintenance
+    color: e4e669
+    description: Dependencies, chores, and repository maintenance
+    group: type
+
+  - name: comp/agent
+    color: 5319e7
+    description: Dart local agent and daemon
+    group: component
+  - name: comp/client
+    color: 5319e7
+    description: Flutter client applications
+    group: component
+  - name: comp/protocol
+    color: 5319e7
+    description: Local or cloud communication contracts
+    group: component
+  - name: comp/providers
+    color: 5319e7
+    description: Model provider setup, adapters, and routing
+    group: component
+  - name: comp/tools
+    color: 5319e7
+    description: Built-in tools, MCP, skills, and execution capabilities
+    group: component
+  - name: comp/install-update
+    color: 5319e7
+    description: Installation, update, and removal behavior
+    group: component
+  - name: comp/ci-release
+    color: 5319e7
+    description: CI, build, signing, packaging, and publication
+    group: component
+  - name: comp/docs
+    color: 5319e7
+    description: Public documentation and documentation tooling
+    group: component
+
+  - name: platform/windows
+    color: 0e8a16
+    description: Windows-specific behavior
+    group: platform
+  - name: platform/macos
+    color: 0e8a16
+    description: macOS-specific behavior
+    group: platform
+  - name: platform/linux
+    color: 0e8a16
+    description: Linux-specific behavior
+    group: platform
+  - name: platform/android
+    color: 0e8a16
+    description: Android-specific behavior
+    group: platform
+  - name: platform/ios
+    color: 0e8a16
+    description: iOS-specific behavior
+    group: platform
+  - name: platform/web
+    color: 0e8a16
+    description: Web-specific behavior
+    group: platform
+
+  - name: P0-critical
+    color: b60205
+    description: Immediate critical impact after maintainer triage
+    group: priority
+  - name: P1-high
+    color: d93f0b
+    description: High priority after maintainer triage
+    group: priority
+  - name: P2-medium
+    color: fbca04
+    description: Medium priority after maintainer triage
+    group: priority
+  - name: P3-low
+    color: 0e8a16
+    description: Low priority after maintainer triage
+    group: priority
+
+  - name: needs-triage
+    color: ededed
+    description: Awaiting maintainer classification
+    group: triage
+  - name: needs-repro
+    color: fef2c0
+    description: Needs a minimal reproducible example or more evidence
+    group: triage
+  - name: needs-decision
+    color: d4c5f9
+    description: Awaiting a durable maintainer decision
+    group: triage
+  - name: blocked
+    color: b60205
+    description: Cannot proceed until a stated dependency is resolved
+    group: triage
+  - name: ready-for-contributor
+    color: 0e8a16
+    description: Scoped and accepted work ready to be claimed
+    group: triage
+  - name: good-first-issue
+    color: 7057ff
+    description: Focused newcomer work with clear acceptance criteria
+    group: triage
+  - name: help-wanted
+    color: 008672
+    description: Maintainers welcome community implementation help
+    group: triage
+
+  - name: duplicate
+    color: cfd3d7
+    description: Already tracked elsewhere
+    group: closure
+  - name: invalid
+    color: e4e669
+    description: Not actionable as reported
+    group: closure
+  - name: wontfix
+    color: ffffff
+    description: Valid concern that the project will not address
+    group: closure
+  - name: not-planned
+    color: ffffff
+    description: Outside the accepted project direction or current scope
+    group: closure
+
+  - name: maintainer-reviewed
+    color: 0052cc
+    description: Positive maintainer review for governance or repository-sensitive paths
+    group: protected-review
+  - name: security-reviewed
+    color: b60205
+    description: Positive authorized review of a security-sensitive change
+    group: protected-review
+  - name: release-reviewed
+    color: 6f42c1
+    description: Positive authorized review of release, signing, or installer changes
+    group: protected-review
+
+  - name: size/small
+    color: c2e0c6
+    description: Small focused change
+    group: size
+  - name: size/medium
+    color: fef2c0
+    description: Medium change requiring several coordinated edits
+    group: size
+  - name: size/large
+    color: f9d0c4
+    description: Large or multi-surface change
+    group: size

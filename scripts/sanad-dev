@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+FVM_VERSION="4.1.2"
+CALLER_DIR="$PWD"
+TARGET_FILE="${BASH_SOURCE[0]}"
+while [ -h "$TARGET_FILE" ]; do
+  DIR="$(cd -P "$(dirname "$TARGET_FILE")" && pwd)"
+  TARGET_FILE="$(readlink "$TARGET_FILE")"
+  [[ $TARGET_FILE != /* ]] && TARGET_FILE="$DIR/$TARGET_FILE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$TARGET_FILE")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+WORKSPACE_ROOT="$(git -C "$CALLER_DIR" rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -n "$WORKSPACE_ROOT" ] && [ -f "$WORKSPACE_ROOT/sanad-agent/scripts/sanad_dev.dart" ]; then
+  PROJECT_DIR="$WORKSPACE_ROOT/sanad-agent"
+elif [ -n "$WORKSPACE_ROOT" ] && [ -f "$WORKSPACE_ROOT/scripts/sanad_dev.dart" ]; then
+  PROJECT_DIR="$WORKSPACE_ROOT"
+fi
+SCRIPT_DIR="$PROJECT_DIR/scripts"
+
+VERBOSE=false
+stage() { printf '%-38s %s\n' "$1" "$2"; }
+run_setup_command() {
+  if [ "$VERBOSE" = true ]; then "$@"; return; fi
+  local output
+  output="$(mktemp "${TMPDIR:-/tmp}/sanad-setup.XXXXXX")"
+  if "$@" > "$output" 2>&1; then rm -f "$output"; return; fi
+  cat "$output" >&2
+  rm -f "$output"
+  return 1
+}
+sha256_file() {
+  if command -v shasum >/dev/null 2>&1; then shasum -a 256 "$1" | awk '{print $1}';
+  elif command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | awk '{print $1}';
+  else echo 'A SHA-256 utility (shasum or sha256sum) is required.' >&2; return 1; fi
+}
+
+ensure_posix_user_path() {
+  local bin_root="$1" config marker='# sanad-dev user command'
+  case ":$PATH:" in *":$bin_root:"*) return ;; esac
+  case "${SHELL:-}" in
+    */zsh) config="$HOME/.zshrc" ;;
+    */bash) config="$HOME/.bashrc" ;;
+    */fish)
+      config="$HOME/.config/fish/config.fish"
+      mkdir -p "$(dirname "$config")"
+      if ! grep -Fq "$marker" "$config" 2>/dev/null; then
+        printf '\n%s\nfish_add_path "%s"\n' "$marker" "$bin_root" >> "$config"
+      fi
+      echo "PATH configured for new terminals; run: fish_add_path \"$bin_root\""
+      return
+      ;;
+    *) config="$HOME/.profile" ;;
+  esac
+  if ! grep -Fq "$marker" "$config" 2>/dev/null; then
+    printf '\n%s\nexport PATH="%s:$PATH"\n' "$marker" "$bin_root" >> "$config"
+  fi
+  echo "PATH configured for new terminals; open a new terminal or source $config."
+}
+
+ensure_fvm() {
+  if command -v fvm >/dev/null 2>&1; then
+    FVM_BIN="$(command -v fvm)"
+    stage 'Checking FVM' 'ready'
+    return
+  fi
+  command -v curl >/dev/null 2>&1 || { echo 'curl is required to install FVM.' >&2; return 1; }
+  command -v tar >/dev/null 2>&1 || { echo 'tar is required to install FVM.' >&2; return 1; }
+  local os arch platform checksum archive url install_root bin_root
+  case "$(uname -s)" in Darwin) os=macos ;; Linux) os=linux ;; *) echo 'Unsupported POSIX platform.' >&2; return 1 ;; esac
+  case "$(uname -m)" in x86_64|amd64) arch=x64 ;; arm64|aarch64) arch=arm64 ;; riscv64) arch=riscv64 ;; *) echo "Unsupported architecture: $(uname -m)" >&2; return 1 ;; esac
+  platform="$os-$arch"
+  case "$platform" in
+    macos-arm64) checksum=0b2a146986c51f06331f135f0bdf2a202eb57f55d7edd420c9078e8520e4c033 ;;
+    macos-x64) checksum=7bbfcb6883ea67ce532163704f5625eba7ecf340084be707cde71a28fefff1d8 ;;
+    linux-arm64) checksum=1a53c57842b20c812404044c9efa16065a24e67cbb296c2f64ae339d145b974c ;;
+    linux-x64) checksum=12b0656688450972750cb714fc5e44ed2dbdd6b1c6813ba6ba6fb71841c17fe4 ;;
+    linux-riscv64) checksum=0d7dabe49fe20e06a68ce57bfdd7dbd6bb7cac6165fd3d89c8ad1c5c42810803 ;;
+    *) echo "No verified FVM artifact for $platform." >&2; return 1 ;;
+  esac
+  install_root="${XDG_DATA_HOME:-$HOME/.local/share}/sanad-dev/fvm"
+  bin_root="${XDG_BIN_HOME:-$HOME/.local/bin}"
+  archive="$(mktemp "${TMPDIR:-/tmp}/sanad-fvm.XXXXXX.tar.gz")"
+  url="https://github.com/leoafarias/fvm/releases/download/$FVM_VERSION/fvm-$FVM_VERSION-$platform.tar.gz"
+  stage 'Installing verified FVM' "downloading $FVM_VERSION"
+  curl -fsSL "$url" -o "$archive"
+  [ "$(sha256_file "$archive")" = "$checksum" ] || { echo 'FVM archive checksum verification failed.' >&2; return 1; }
+  rm -rf "$install_root"
+  mkdir -p "$install_root" "$bin_root"
+  tar -xzf "$archive" -C "$install_root"
+  rm -f "$archive"
+  FVM_BIN="$(find "$install_root" -type f -name fvm | head -1)"
+  [ -n "$FVM_BIN" ] || { echo 'The verified FVM archive did not contain an executable.' >&2; return 1; }
+  chmod +x "$FVM_BIN"
+  ln -sfn "$FVM_BIN" "$bin_root/fvm"
+  FVM_BIN="$bin_root/fvm"
+  ensure_posix_user_path "$bin_root"
+  export PATH="$bin_root:$PATH"
+  stage 'Installing verified FVM' 'ready'
+}
+
+install_shim() {
+  local force="$1" bin_root shim existing expected
+  bin_root="${XDG_BIN_HOME:-$HOME/.local/bin}"
+  shim="$bin_root/sanad-dev"
+  mkdir -p "$bin_root"
+  expected="$PROJECT_DIR/scripts/sanad-dev"
+  if [ -e "$shim" ] || [ -L "$shim" ]; then
+    existing="$(readlink "$shim" 2>/dev/null || printf 'non-symlink')"
+    if [ "$existing" != "$expected" ] && [ "$force" != true ]; then
+      echo "sanad-dev already belongs to another checkout: $existing" >&2
+      echo 'Re-run setup --force to replace it.' >&2
+      return 1
+    fi
+  fi
+  ln -sfn "$expected" "$shim"
+  ensure_posix_user_path "$bin_root"
+  stage 'Installing sanad-dev command' 'ready'
+}
+
+run_setup() {
+  local force="$1" flutter_pin stamp_root fingerprint stamp packages_ready
+  flutter_pin="$(sed -n 's/.*"flutter"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PROJECT_DIR/.fvmrc")"
+  [ -n "$flutter_pin" ] || { echo 'Could not read the pinned Flutter version.' >&2; return 1; }
+  if [ -x "$PROJECT_DIR/.fvm/flutter_sdk/bin/flutter" ]; then
+    stage "Installing Flutter $flutter_pin" 'skipped'
+  else
+    stage "Installing Flutter $flutter_pin" 'running'
+    run_setup_command "$FVM_BIN" install "$flutter_pin"
+  fi
+  stamp_root="$PROJECT_DIR/.dart_tool/sanad-dev"
+  mkdir -p "$stamp_root"
+  fingerprint="$(printf '%s:%s:%s' "$flutter_pin" "$(sha256_file "$PROJECT_DIR/agent/pubspec.lock")" "$(sha256_file "$PROJECT_DIR/client/pubspec.lock")" | { if command -v shasum >/dev/null 2>&1; then shasum -a 256; else sha256sum; fi; } | awk '{print $1}')"
+  stamp="$stamp_root/setup.stamp"
+  packages_ready=false
+  [ -f "$PROJECT_DIR/agent/.dart_tool/package_config.json" ] && [ -f "$PROJECT_DIR/client/.dart_tool/package_config.json" ] && packages_ready=true
+  if [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$fingerprint" ] && [ "$packages_ready" = true ]; then
+    stage 'Resolving package dependencies' 'skipped'
+  else
+    stage 'Resolving Agent dependencies' 'running'
+    (cd "$PROJECT_DIR/agent" && run_setup_command "$FVM_BIN" dart pub get)
+    stage 'Resolving Client dependencies' 'running'
+    (cd "$PROJECT_DIR/client" && run_setup_command "$FVM_BIN" flutter pub get)
+    printf '%s' "$fingerprint" > "$stamp"
+  fi
+  install_shim "$force"
+}
+
+main() {
+  local command="${1:-}" force=false needs_setup=false
+  [ "$command" = setup ] || [ -z "$command" ] || needs_setup=false
+  if [ "$command" = setup ] || [ -z "$command" ]; then needs_setup=true; fi
+  for arg in "$@"; do
+    [ "$arg" = --force ] && force=true
+    [ "$arg" = --verbose ] && VERBOSE=true
+  done
+  ensure_fvm
+  if [ "$needs_setup" = true ]; then
+    run_setup "$force"
+    [ "$command" = setup ] && return 0
+    set -- run all
+  fi
+  cd "$PROJECT_DIR/client"
+  SANAD_DEV_CALLER_DIR="$CALLER_DIR" "$FVM_BIN" dart "$SCRIPT_DIR/sanad_dev.dart" "$@"
+}
+
+main "$@"

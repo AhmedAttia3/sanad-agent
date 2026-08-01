@@ -1,0 +1,260 @@
+<div dir="rtl">
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="client/assets/brand/sanad-wordmark-horizontal-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="client/assets/brand/sanad-wordmark-horizontal.svg">
+    <img src="client/assets/brand/sanad-wordmark-horizontal.svg" alt="Sanad Agent" width="720">
+  </picture>
+</p>
+
+<p align="center">
+  <strong>وكيل ذكاء اصطناعي محلي أولًا ومتعدد المنصات لأجهزتك وخوادمك، تديره كلها من واجهة واحدة.</strong>
+</p>
+
+<p align="center">
+  <a href="https://sanad.eaststarai.com"><img src="https://img.shields.io/badge/الموقع-Sanad-2563EB?style=for-the-badge" alt="موقع Sanad Agent"></a>
+  <a href="https://app.sanad.eaststarai.com"><img src="https://img.shields.io/badge/تطبيق%20الويب-افتح-0F766E?style=for-the-badge" alt="افتح Sanad Client على الويب"></a>
+  <a href="docs/product/features.md"><img src="https://img.shields.io/badge/المميزات-استكشف-2563EB?style=for-the-badge" alt="استكشف مميزات Sanad Agent"></a>
+  <a href="docs/operations/user_guide.md"><img src="https://img.shields.io/badge/التوثيق-دليل%20المستخدم-0F766E?style=for-the-badge" alt="توثيق Sanad Agent"></a>
+  <a href="https://github.com/EastStarAI/sanad-agent/releases/latest"><img src="https://img.shields.io/github/v/release/EastStarAI/sanad-agent?display_name=tag&style=for-the-badge" alt="أحدث إصدار من Sanad Agent"></a>
+  <a href="https://github.com/EastStarAI/sanad-agent/actions/workflows/ci.yml"><img src="https://github.com/EastStarAI/sanad-agent/actions/workflows/ci.yml/badge.svg" alt="حالة بناء Sanad Agent"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/الترخيص-MIT-16A34A?style=for-the-badge" alt="ترخيص MIT"></a>
+  <a href="https://github.com/EastStarAI/sanad-agent/discussions"><img src="https://img.shields.io/badge/المجتمع-Discussions-8250DF?style=for-the-badge" alt="نقاشات مجتمع Sanad Agent"></a>
+  <a href="README.md"><img src="https://img.shields.io/badge/Language-English-lightgrey?style=for-the-badge" alt="Read in English"></a>
+</p>
+
+يشغّل Sanad Agent وكيل Dart أصليًا بالقرب من ملفاتك وأدواتك. استخدمه محليًا
+مع نماذج تعمل دون اتصال، أوثبّته على عدة أجهزة وخوادم دون واجهة رسومية وأدرها
+من عميل Flutter واحد على سطح المكتب أوالهاتف أوالويب.
+
+أنشأ **Ahmed Attia** مشروع Sanad Agent ويطوره تحت علامة **EastStar AI**، وهي
+استوديو ذكاء اصطناعي مستقل.
+
+<p align="center">
+  <img src="docs/assets/screenshots/sanad-desktop-and-ios-simulator.png" alt="Sanad يعمل على macOS بجانب محاكي iPhone" width="100%">
+  <br>
+  <em>تجربة Sanad واحدة على سطح المكتب والهاتف.</em>
+</p>
+
+## لماذا Sanad؟
+
+| القدرة | ما تمنحك إياه |
+|---|---|
+| **واجهة واحدة لكل أجهزتك** | اربط أجهزة سطح المكتب والخوادم، ثم تعامل مع مساحات عملها ومحادثاتها المستقلة من سطح المكتب أوالهاتف أوالويب. |
+| **محلي أولًا، ويعمل دون اتصال** | صِل عميل سطح المكتب مباشرة بوكيل Dart. ومع Ollama أوLM Studio أوllama.cpp يمكن تشغيل المحادثات والأدوات المدعومة دون إنترنت. |
+| **إعادة توجيه العمل الجاري** | وجّه الجولة النشطة عند الحد الآمن التالي دون إيقافها، أوضع طلبًا مستقلًا في الطابور. |
+| **عمل متوازٍ يتعافى من الانقطاع** | شغّل محادثات معزولة بالتوازي واستعد حالة العمل النشط والمنتظر والمتوقف والفاشل والمكتمل بعد إعادة الاتصال أوتشغيل الوكيل. |
+| **مزودوك وحساباتك** | اضبط مزودين مختلفين وعدة حسابات للمزود نفسه ونماذج محلية ونقاط نهاية مخصصة، وبدّل المسار داخل المحادثة مع failover مضبوط للنموذج نفسه. |
+| **عزل كل مساحة عمل** | اعزل السياق والصلاحيات والمزود والمحادثات والمسودات وخوادم MCP والمهارات حسب مساحة العمل المالكة. |
+| **ذاكرة وهوية قابلتان للفحص** | احفظ السياق طويل الأمد في ملفات وخصص الوكيل عبر `SOUL.md` و`USER.md` و`MEMORY.md` وتعليمات مساحة العمل. |
+| **مهيأ للمساهمين ووكلاء البرمجة** | اتبع عقود `AGENTS.md` المتدرجة وفهرس التوثيق، واستخدم تشغيلات `sanad-dev` المعزولة والسجلات وإعادة التشغيل المنضبطة وFlutter hot reload. |
+
+اطلع على القدرات والقيود الحالية كاملة في
+[مميزات Sanad Agent](docs/product/features.md).
+
+## البدء السريع
+
+### للمستخدمين
+
+#### استخدم Sanad على جهازك
+
+1. نزّل Sanad Client لمنصة متاحة للتوزيع العام من
+   [أحدث إصدار](https://github.com/EastStarAI/sanad-agent/releases/latest).
+   يتوفر إصدار iOS الأول عبر Internal TestFlight فقط، وليس كتنزيل عام داخل
+   GitHub Releases.
+2. افتح العميل واختر مسار الجهاز المحلي.
+3. اضبط مزودًا محليًا مثل Ollama أوLM Studio أوllama.cpp، أوأضف مزودًا مستضافًا.
+4. اختر مساحة عمل وابدأ محادثة.
+
+لا يلزم حساب Sanad للمسار المحلي فقط.
+
+#### أضف جهازًا أوخادمًا بعيدًا
+
+1. افتح Sanad Client على سطح المكتب أوالهاتف أوالويب.
+2. أنشئ جهازًا وسمّه.
+3. انسخ الأمر المولّد وشغّله مرة واحدة على الجهاز أوالخادم الهدف؛ سيثبت
+   Sanad Agent ويربطه ويشغله.
+4. اختر الجهاز من العميل نفسه وابدأ العمل مع مساحات عمله ومحادثاته.
+
+على macOS أوLinux:
+
+```bash
+curl -fsSL https://sanad.eaststarai.com/install.sh | bash -s -- --pairing-token '<pairing-token>'
+```
+
+على Windows PowerShell:
+
+```powershell
+& ([scriptblock]::Create((irm https://sanad.eaststarai.com/install.ps1))) -PairingToken '<pairing-token>'
+```
+
+> **بناء Windows غير موقّع:** مثبّت Windows في الإصدار `1.0.0` غير موقّع
+> عمدًا. تحقق أنه من الإصدار الرسمي وأن SHA-256 يطابق release manifest المنشور
+> قبل المتابعة. لا تعطّل Microsoft Defender أوSmart App Control.
+
+يضع Sanad Client pairing token صالحًا للإنشاء فقط داخل الأمر المنسوخ. يتحقق
+المثبّت من artifact الإصدار، ويجهز الربط، ويبدأ خدمة الخلفية. بعد أول اتصال
+ناجح يستبدل الوكيل ذلك token المرئي باعتماد دائم يولده محليًا، ولا يمكن إعادة
+استخدام token الأولي.
+
+راجع [دليل تثبيت واستخدام Sanad Agent](docs/operations/user_guide.md) لحزم
+العميل، وتثبيت الوكيل يدويًا، وإدارة الخدمة، والمزودين، والتحديث، والإزالة.
+
+### للمطورين
+
+استنسخ المستودع وانتقل إلى مجلده:
+
+```bash
+git clone https://github.com/EastStarAI/sanad-agent.git sanad-agent
+cd sanad-agent
+```
+
+على macOS أوLinux، جهّز وشغّل الزوج المُدار كاملًا باستخدام:
+
+```bash
+scripts/sanad-dev
+```
+
+على Windows PowerShell، شغّل:
+
+```powershell
+.\scripts\sanad-dev.ps1
+```
+
+تتولى أداة الإعداد تثبيت FVM ونسخة Flutter المعتمدة واعتماديات المشروع، ثم
+تضيف الأمر متعدد المنصات `sanad-dev` إلى حساب المستخدم دون الحاجة إلى صلاحيات
+المسؤول.
+
+لاختيار جهاز Flutter أوالتشغيل محليًا دون اتصال سحابي أوالاطلاع على أوامر
+التطوير والاختبار، راجع [دليل المطور](docs/operations/developer_guide.md).
+
+## اختر طريقة عملك
+
+| الوضع | مكان تشغيل الوكيل | مكان التحكم | حساب Sanad |
+|---|---|---|---|
+| سطح مكتب محلي | جهاز macOS أوLinux أوWindows نفسه | عميل سطح المكتب عبر اتصال محلي مباشر | غير مطلوب |
+| جهاز متصل | جهاز مكتبي أوبعيد مربوط | سطح المكتب أوالهاتف أوالويب | مطلوب |
+| خادم headless | خادم macOS أوLinux أوWindows مربوط | سطح المكتب أوالهاتف أوالويب | مطلوب |
+| CLI مستقل | الجهاز أوالخادم الحالي | الطرفية | غير مطلوب محليًا؛ مطلوب للوصول المتصل |
+
+## كيف يعمل؟
+
+```text
+Flutter Client
+├── اتصال محلي مباشر ─────────► Dart Agent على هذا الجهاز
+└── اتصال مستضاف اختياري ─────► Sanad Gateway ─────► Dart Agent على جهاز بعيد
+
+Dart Agent
+├── مساحات العمل والجلسات والتعافي والذاكرة وإعداد المزودين
+├── الأدوات المدمجة وخوادم MCP والمهارات وتطبيق الصلاحيات
+└── اتصال بنموذج محلي أومزود نماذج خارجي
+```
+
+يملك وكيل Dart التنفيذ والحالة المحلية. ويوفر عميل Flutter واجهة اختيار الأجهزة
+ومساحات العمل والمحادثات والمزودين والنماذج، وعرض الرسائل والأدوات والصلاحيات
+والأسئلة والطوابير وحالة التعافي.
+
+## بنية المستودع
+
+- [`agent/`](agent/) — CLI وخدمة خلفية أصليان بـDart يملكان التنفيذ والحالة المحلية.
+- [`client/`](client/) — واجهة Flutter للأجهزة المحلية والبعيدة.
+- [`docs/`](docs/) — توثيق المنتج والتقنية والتشغيل والجودة.
+- [`scripts/`](scripts/) — أدوات التطوير والتوثيق والبناء والإصدار.
+
+## التفاعلات الأساسية
+
+### وجّه الوكيل أثناء العمل
+
+أرسل رسالة عادية أثناء الجولة النشطة لتوجيهها عند الحد الآمن التالي دون فقدان
+تقدمها. استخدم `Ctrl+Enter` على Windows/Linux أو`Cmd+Enter` على macOS لوضع طلب
+مستقل في الطابور. يمكن ترقية الطلبات أوحذفها، ويعيد Stop المدخلات غير المنفذة
+إلى المسودة.
+
+### دع الوكيل يسأل
+
+يمكن للوكيل تعليق الجولة وعرض بطاقة سؤال بإجابات مقترحة وخيار إجابة مخصصة، ثم
+يستأنف الجولة نفسها بعد إجابتك. طلبات الصلاحية منفصلة وتبقى خاضعة لسياسة مساحة
+العمل.
+
+### استخدم عدة مزودين وحسابات
+
+أنشئ عدة instances من المزود نفسه، مثل حساب شخصي وآخر للعمل. لكل instance
+اعتماداته ونموذجه وجاهزيته وحدوده وسياسة failover مستقلة. ويمكن لـChatGPT
+Subscription عرض نافذتي الاستهلاك Session وWeekly المعتمدتين.
+
+### وسّعه عبر MCP والمهارات
+
+صِل خوادم MCP عبر stdio أوServer-Sent Events أوstreamable HTTP، وثبّت المهارات
+على مستوى المستخدم أومساحة العمل. تتقدم تعريفات مساحة العمل على القدرات العامة
+ذات الاسم نفسه.
+
+## المنصات
+
+| المكوّن | المنصات |
+|---|---|
+| Sanad Agent | macOS وLinux وWindows، بما في ذلك التشغيل headless |
+| Sanad Client | macOS وWindows وLinux وAndroid وiOS عبر Internal TestFlight في الإصدار الأول، والويب |
+
+## حالة المميزات والقيود
+
+- **الجدولة:** تستمر المهام one-shot المحفوظة ما دامت خدمة الوكيل نشطة؛ لا تدخل
+  جداول cron المتكررة في السطح المستقر.
+- **Computer Use:** تحتاج أدوات لقطة الشاشة ولوحة المفاتيح والفأرة إلى تفعيل
+  صريح وصلاحيات نظام التشغيل المناسبة.
+- **الصوت المباشر:** مسار Gemini Realtime تجريبي ومخفي افتراضيًا وليس من
+  المميزات المستقرة. راجع [الصوت المباشر التجريبي](docs/technical/voice_streaming.md).
+- **السعة:** لا يفرض Sanad عددًا ثابتًا للمحادثات أوprovider instances؛ تعتمد
+  السعة العملية على الجهاز والمزودين.
+
+## التوثيق
+
+| الدليل | المحتوى |
+|---|---|
+| [المميزات](docs/product/features.md) | القدرات والقيود والحدود التجريبية |
+| [دليل المستخدم](docs/operations/user_guide.md) | التثبيت والربط والمزودون والتحديث وإدارة الخدمة والإزالة |
+| [دليل المطور](docs/operations/developer_guide.md) | إعداد المصدر والاختبارات وworktrees والسجلات وإعادة التشغيل |
+| [واجهة العميل](docs/product/client_interface.md) | الأجهزة ومساحات العمل والمحادثات والمزودون والصلاحيات |
+| [بروتوكول المزودين](docs/technical/provider_protocol.md) | القوالب والinstances والاعتمادات والنماذج والجاهزية والاستهلاك وfailover |
+| [الاتصال المستضاف](docs/technical/hosted_services_boundary.md) | الهوية والأجهزة والrelay وملكية الحالة |
+| [التوثيق التقني](docs/technical/MOC.md) | تشغيل agent/client والبروتوكولات والتخزين والمنصات |
+| [محرك الوكيل](docs/agent_engine/MOC.md) | تنفيذ النماذج والأدوات وMCP والمهارات والقدرات |
+| [الجودة والتعافي](docs/qa_maintenance/MOC.md) | مصفوفات الانحدار وسلوك التعافي |
+| [الفهرس المقروء آليًا](docs/llms.txt) | مداخل التوثيق المنسقة للمطورين ووكلاء البرمجة |
+
+## الأمان والخصوصية
+
+تعود ملكية مساحات العمل والمحادثات وإعداد المزودين والذكريات وحالة التنفيذ إلى
+الوكيل العامل على الجهاز المختار. تتبادل مميزات الأجهزة المتصلة الهوية وقائمة
+الأجهزة والأوامر والأحداث اللازمة لتشغيل relay البعيد.
+
+لا تضع API keys أوtokens في Git. اعتمادات المزود وهوية Sanad بيانات تشغيل
+خارج Git، وتُنقح الحقول الشبيهة بالاعتمادات عند إنتاج diagnostics.
+
+أبلغ عن الثغرات بصورة خاصة وفق [SECURITY.md](SECURITY.md).
+
+## المساهمة
+
+نرحب بالمساهمات. ابدأ من [CONTRIBUTING.md](CONTRIBUTING.md)، واتبع أقرب عقد
+`AGENTS.md`، واقرأ [CODE_OF_CONDUCT.md](.github/CODE_OF_CONDUCT.md). لا تتطلب
+المساهمة CLA أوDCO؛ تلزم الفحوص وprotected review labels، وتستخدم PRs البشرية
+Squash Merge.
+
+## المجتمع
+
+- **Issues:** [أبلغ عن bug أواقترح عملًا قابلًا للتنفيذ](https://github.com/EastStarAI/sanad-agent/issues)
+- **Discussions:** [اقترح فكرة أواطرح سؤالًا معماريًا](https://github.com/EastStarAI/sanad-agent/discussions)
+- **المجتمع:** [انضم إلى خادم Sanad Agent على Discord](https://discord.gg/RPTJ2X9rn)
+  (دعوة دائمة مملوكة للمشروع، تهبط في `#help-and-support`).
+- **الدعم:** [اختر قناة المساعدة الصحيحة](.github/SUPPORT.md)
+- **الحوكمة:** [اقرأ آلية القرارات والمساهمات](.github/GOVERNANCE.md)
+- **الأمان:** [أبلغ عن الثغرات بصورة خاصة](SECURITY.md)
+- **توقيع الكود:** [راجع سياسة الثقة والتوقيع للملفات المنشورة](docs/operations/code_signing_policy.md)
+
+## الترخيص
+
+يتوفر Sanad Agent تحت [ترخيص MIT](LICENSE).
+
+Copyright © 2026 Ahmed Attia, operating as EastStar AI.
+
+</div>

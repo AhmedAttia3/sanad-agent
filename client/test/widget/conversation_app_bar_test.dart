@@ -1,0 +1,123 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sanad_client/features/conversations/domain/models/device_workspace.dart';
+import 'package:sanad_client/features/conversations/presentation/bloc/conversation_visual_state.dart';
+import 'package:sanad_client/features/conversations/presentation/bloc/session_messages_state.dart';
+import 'package:sanad_client/features/conversations/presentation/widgets/conversation_app_bar.dart';
+
+void main() {
+  test('an existing empty session is active while a null session is new', () {
+    expect(
+      const SessionMessagesState(activeSessionId: 'session-1').visualState,
+      ConversationVisualState.activeSession,
+    );
+    expect(
+      const SessionMessagesState().visualState,
+      ConversationVisualState.newConversation,
+    );
+  });
+
+  testWidgets('desktop app bar constrains long workspace and session titles', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(320, 240));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: ConversationAppBar(
+            sessionTitle: 'A very long conversation title that must remain inside the available width',
+            workspace: DeviceWorkspace(
+              id: 'workspace-1',
+              name: 'A very long workspace name that must be truncated safely',
+              path: '/workspace',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(tester.takeException(), isNull);
+    final workspaceText = tester.widget<Text>(
+      find.text('A very long workspace name that must be truncated safely'),
+    );
+    expect(workspaceText.overflow, TextOverflow.ellipsis);
+  });
+
+  testWidgets('mobile app bar omits workspace subtitle when unscoped', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ConversationAppBar(
+            sessionTitle: 'Unscoped session',
+            isMobile: true,
+            onMenuPressed: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Unscoped session'), findsOneWidget);
+    expect(find.byTooltip('Open navigation menu'), findsOneWidget);
+    expect(find.byType(Text), findsOneWidget);
+  });
+
+  testWidgets('app bar applies RTL text direction for Arabic titles in desktop layout', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: ConversationAppBar(
+            sessionTitle: 'محادثة جديدة',
+            workspace: DeviceWorkspace(
+              id: 'workspace-1',
+              name: 'مساحة العمل',
+              path: '/workspace',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final workspaceText = tester.widget<Text>(find.text('مساحة العمل'));
+    expect(workspaceText.textDirection, TextDirection.rtl);
+
+    final titleText = tester.widget<Text>(find.text('محادثة جديدة'));
+    expect(titleText.textDirection, TextDirection.rtl);
+  });
+
+  testWidgets('app bar applies RTL text direction and alignments in mobile layout', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        home: Scaffold(
+          body: ConversationAppBar(
+            sessionTitle: 'محادثة جديدة',
+            isMobile: true,
+            workspace: DeviceWorkspace(
+              id: 'workspace-1',
+              name: 'مساحة العمل',
+              path: '/workspace',
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final titleText = tester.widget<Text>(find.text('محادثة جديدة'));
+    expect(titleText.textDirection, TextDirection.rtl);
+    expect(titleText.textAlign, TextAlign.right);
+
+    final workspaceText = tester.widget<Text>(find.text('مساحة العمل'));
+    expect(workspaceText.textDirection, TextDirection.rtl);
+    expect(workspaceText.textAlign, TextAlign.right);
+
+    final column = tester.widget<Column>(find.byType(Column));
+    expect(column.crossAxisAlignment, CrossAxisAlignment.end);
+  });
+}

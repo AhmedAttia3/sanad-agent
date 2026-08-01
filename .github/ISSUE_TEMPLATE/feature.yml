@@ -1,0 +1,56 @@
+name: Feature implementation
+description: Propose actionable implementation after a direction is accepted
+title: "feat: "
+labels: ["needs-triage", "type/feature"]
+body:
+  - type: markdown
+    attributes:
+      value: Use Discussions for open-ended ideas or RFCs. This form is for scoped implementation work. Do not include secrets or private security details.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the user or contributor problem without assuming a solution.
+    validations:
+      required: true
+  - type: input
+    id: decision
+    attributes:
+      label: Accepted Discussion, Issue, or documented decision
+      description: Link the prior direction, or explain why the change is small enough not to need one.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and exclusions
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance and verification
+      description: List observable acceptance criteria and focused verification.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Contributor checks
+      options:
+        - label: I searched existing Discussions, Issues, and pull requests.
+          required: true
+        - label: I am willing to implement this as a focused pull request if accepted.
+          required: false

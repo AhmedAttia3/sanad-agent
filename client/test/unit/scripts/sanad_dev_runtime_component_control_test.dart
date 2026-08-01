@@ -1,0 +1,76 @@
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+
+import '../../../../scripts/sanad_dev/runtime_component_control.dart';
+
+void main() {
+  test('component control request round-trips all selectors', () async {
+    final directory = await Directory.systemTemp.createTemp(
+      'sanad-component-control-',
+    );
+    addTearDown(() => directory.delete(recursive: true));
+    final path = runtimeComponentControlPath(directory.path, 58091);
+    final request = RuntimeComponentControlRequest(
+      requestId: 'request-1',
+      launcherId: 'launcher-1',
+      runtimeNonce: 'nonce-1',
+      action: RuntimeComponentAction.stop,
+      target: RuntimeComponentTarget.client,
+      status: 'requested',
+      requestedAt: DateTime.utc(2026, 7, 30),
+      deviceId: 'macos',
+      clientPid: 42,
+      vmServicePort: 51042,
+    );
+
+    await writeRuntimeComponentControl(path, request);
+    final restored = await readRuntimeComponentControl(path);
+
+    expect(restored?.requestId, 'request-1');
+    expect(restored?.action, RuntimeComponentAction.stop);
+    expect(restored?.target, RuntimeComponentTarget.client);
+    expect(restored?.deviceId, 'macos');
+    expect(restored?.clientPid, 42);
+    expect(restored?.vmServicePort, 51042);
+    expect(restored?.isTerminal, isFalse);
+  });
+
+  test('terminal result preserves request identity', () {
+    final request = RuntimeComponentControlRequest(
+      requestId: 'request-1',
+      launcherId: 'launcher-1',
+      runtimeNonce: 'nonce-1',
+      action: RuntimeComponentAction.start,
+      target: RuntimeComponentTarget.agent,
+      status: 'requested',
+      requestedAt: DateTime.utc(2026, 7, 30),
+    );
+
+    final completed = request.copyWith(
+      status: 'complete',
+      message: 'agent start complete',
+    );
+
+    expect(completed.isTerminal, isTrue);
+    expect(completed.requestId, request.requestId);
+    expect(completed.launcherId, request.launcherId);
+    expect(completed.message, 'agent start complete');
+  });
+
+  test('invalid action fails closed', () {
+    expect(
+      () => RuntimeComponentControlRequest.fromJson({
+        'version': runtimeComponentControlVersion,
+        'request_id': 'request-1',
+        'launcher_id': 'launcher-1',
+        'runtime_nonce': 'nonce-1',
+        'action': 'kill',
+        'target': 'agent',
+        'status': 'requested',
+        'requested_at': DateTime.utc(2026, 7, 30).toIso8601String(),
+      }),
+      throwsFormatException,
+    );
+  });
+}

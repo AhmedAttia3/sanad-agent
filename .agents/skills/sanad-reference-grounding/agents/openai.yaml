@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sanad Reference Grounding"
+  short_description: "Create and apply verified reference evidence"
+  default_prompt: "Use $sanad-reference-grounding to create or refresh the evidence for this Sanad task, then apply it through implementation and parity review."

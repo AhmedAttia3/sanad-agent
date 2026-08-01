@@ -1,0 +1,67 @@
+name: Bug report
+description: Report reproducible incorrect behavior in Sanad Agent
+title: "bug: "
+labels: ["needs-triage", "type/bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing Issues first. For vulnerabilities, stop and use Private Vulnerability Reporting. Redact tokens, personal paths, user content, and unrelated logs.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the actual behavior and its impact.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: List the smallest safe steps, configuration, or sample needed to reproduce the problem.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Sanad version or commit
+      placeholder: 1.0.0 or commit SHA
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options: [Windows, macOS, Linux, Android, iOS, Web, Multiple or other]
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options: [Agent, Client, Protocol, Providers, Tools, Install or update, CI or release, Documentation, Unknown]
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted diagnostics
+      description: Paste only the minimum relevant lines after removing secrets, user content, personal paths, and private hostnames.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety checks
+      options:
+        - label: I searched for an existing report.
+          required: true
+        - label: This report contains no vulnerability details or unredacted secrets, personal data, or private logs.
+          required: true
+        - label: I am willing to submit a focused pull request if maintainers accept the direction.
+          required: false

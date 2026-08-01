@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/EastStarAI/sanad-agent/security/advisories/new
+    about: Report vulnerabilities privately. Never disclose them in a public issue.
+  - name: Ideas and architectural RFCs
+    url: https://github.com/EastStarAI/sanad-agent/discussions/categories/ideas-rfcs
+    about: Discuss a direction before opening implementation work.
+  - name: Questions and community support
+    url: https://github.com/EastStarAI/sanad-agent/discussions/categories/q-a
+    about: Ask a public technical question without filing a bug.
+  - name: Documentation
+    url: https://github.com/EastStarAI/sanad-agent/tree/main/docs
+    about: Browse product, technical, operations, and QA documentation.

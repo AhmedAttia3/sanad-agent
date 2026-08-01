@@ -1,0 +1,8 @@
+#include "../../Flutter/Flutter-Release.xcconfig"
+#include "Warnings.xcconfig"
+
+// Flutter creates the build with an ad-hoc identity. The release pipeline
+// re-signs nested code and the app with Developer ID Application.
+DEVELOPMENT_TEAM = UC2824B99G
+CODE_SIGN_STYLE = Manual
+CODE_SIGN_IDENTITY = -

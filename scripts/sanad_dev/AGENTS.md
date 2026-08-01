@@ -1,0 +1,59 @@
+# sanad-dev CLI Agent Contract
+
+This contract governs all modifications, additions, and debugging tasks performed within the `scripts/sanad_dev/` directory. All agents and developers must adhere to these policies strictly to prevent configuration drift and environment leakage.
+
+---
+
+## 1. Environment & Pathing Laws
+* **No Absolute Paths**: Never hardcode or write absolute paths anywhere in the `sanad_dev` scripts, state managers, or logs. Always use relative paths starting from the workspace root.
+* **FVM Command Constraint**: Every spawned process invoking `dart` or `flutter` must be executed through `fvm` (Flutter Version Management) (e.g., `fvm dart run...`, `fvm flutter run...`). Direct global calls to `dart` or `flutter` are strictly prohibited.
+
+---
+
+## 2. Bootstrap and Hosted Profile Laws
+* **User-Scoped Bootstrap:** Platform bootstrap may install only pinned, checksum-verified official FVM artifacts, the repository-pinned Flutter SDK, package dependencies, and a checkout-owned user shim. It must never request elevated privileges, silently replace another checkout's shim, or launch after a failed stage.
+* **Public Source Profile:** Public source runs use `client/config/prod.json` with Local+Cloud enabled by default. `client/config/dev.json`, endpoint overrides, and Production cloud smoke are explicit internal/manual choices; automated tests must not contact Production.
+* **Complete Managed Journals:** Every managed Agent and Client process must be captured from spawn through exit in launcher-owned, bounded, user-only journals. Journals are diagnostic surfaces only and must never become ownership or liveness evidence. Manual logger endpoints remain explicitly incomplete fallbacks.
+* **Terminal Ownership:** `run all` keeps Agent output in the launcher terminal and opens one read-only watcher per Client. Terminal adapter failure or headless execution must not change process ownership or runtime success.
+
+## 3. Git & Graceful Error Handling Laws
+* **Graceful Failure**: The `sanad_dev` tool requires Git to resolve workspace paths, branches, and worktree IDs. If Git is not installed on the system, or if the tool is run outside of a Git repository, the execution MUST catch any exceptions or error codes and exit cleanly with code `1`, printing a clear user-facing error message to `stderr`.
+* **No Raw Stack Traces**: Raising uncaught `StateError` or `ProcessException` stack traces to the terminal during Git detection/execution is forbidden.
+
+---
+
+## 4. Worktree, Home & Port Isolation Laws
+* **Unified Sanad Home:** Linked worktrees use one worktree-scoped Sanad Home for identity, credentials, databases, memories, runtime files, and a deterministic client-preference namespace. A standalone clone must fail closed when another workspace owns the primary Home/endpoint; an explicit absolute Home isolates its daemon port, VM-service port, and preferences. The launcher must not inject `SANAD_STATE_HOME`; a home selector accepts only `user` or an absolute path. The primary/user home retains the default preference namespace.
+* **Mutation Ownership:** Normal status, component run/stop, and developer actions select by invoking workspace identity and ignore inherited requester gateway variables. Ordinary mutation requires one live launcher lease whose nonce, PID/process identity, workspace, available Agent health identity, Home, preferences, source, and exact active client PID/VM/profile set agree. Agent-only and Client-only groups remain managed while their active component inventory matches the lease. Missing, stale, PID-reused, contradictory, manual, cross-workspace, or shared identity blocks the requested mutation; an explicit port, device id, workspace hash, or switch-capable flag never grants mutation authority.
+* **Cloud Default:** Matched daemon/client runs enable cloud and local connections by default; local-only mode requires an explicit cloud-disable option.
+* **Deterministic Allocation**: Candidate ports for the agent (range `58085-58185`) and client VM service (range `51000-51999`) must be determined using stable hashing of the worktree path to prevent collisions.
+* **Real-Time Process Discovery**: The tool must not rely on legacy cache files (`runtime.json`) or redirect log files (`agent.log`) to infer liveness. The port-scoped launcher lease is ownership evidence only and must be revalidated against the live launcher process identity, Agent health, and OS-discovered clients before every mutation.
+
+---
+
+## 5. Secure Network Discovery Laws
+* **No Path Leakage**: To prevent local information disclosure and protect developer privacy, the agent's `/health` endpoint and CLI port queries must never transmit absolute directory paths or system usernames over HTTP.
+* **Abstract Properties**: The tool and agent must exchange cryptographic one-way hashes (`workspace_hash`) and abstract state mode indicators (`state_mode`). The CLI is responsible for translating these indicators into absolute local paths locally on the host machine.
+
+---
+
+## 6. Runtime Source Handoff
+* **Direct User Authorization:** An agent must not invoke `sanad-dev switch` unless the user directly and explicitly requests that specific runtime-to-worktree handoff. Requests to implement, test, debug, verify, restart, or deploy do not imply switch authorization. Requester session/tool identity selects and safely recovers a pair; it is not proof of user consent.
+* **Shared-Session Warning:** Source handoff changes the agent and client code used by every session sharing the selected runtime pair. Before execution, the agent must disclose this shared impact and obtain fresh user confirmation whenever another session may be active or pair ownership is uncertain.
+* **Explicit Runtime-Group Ownership:** `sanad-dev switch --runtime current` may move only one complete source runtime group: one agent plus every switch-capable client targeting its gateway port and retained Home. Requester port identity selects the agent; an ambiguous human invocation must fail closed unless an explicit agent port is supplied.
+* **Preserved Runtime Identity:** A switch retains the selected group's Sanad Home, local gateway port, every client VM-service port/device/profile, cloud mode, and preferences namespace. Other active runtimes remain untouched, and an already-running target worktree must be rejected.
+* **Safe Replacement:** The owning launcher must complete the daemon restart safety boundary before replacing the agent or any client, start and verify the complete group from the target source, and restore the complete previous group when any target member fails. Absolute target paths may exist only in the local port-scoped handoff record and must never cross the daemon HTTP boundary.
+* **Complete Status Projection:** Runtime status must distinguish the command worktree from the active source root and list every client attached to the selected agent with device, VM-service port, PID, source, worktree marker, and switch capability; it must never silently select the first client.
+* **Status-Bracketed Handoff:** Every authorized source handoff must run status from the source worktree before the switch and from the target worktree after the switch returns. The checks record and verify the selected source, branch, agent, and complete client set; status remains caller-worktree scoped.
+* **Continuous Tool Result:** An Agent-origin switch must durably checkpoint a requester-bound deferred result before drain and resolve the launcher transaction exactly once into the original tool call as `complete`, `rolled_back`, `failed`, or `recovery_failed`. Acceptance is progress, not terminal success, and the original tool result remains authoritative even though post-handoff status verification is required.
+
+## 7. Component Lifecycle Policy
+* **Independent Components:** The managed launcher may own an Agent, one or more device-identified Clients, or both. Starting or exiting one component must not stop a sibling component. Device-targeted Client mutation requires one exact owned match and fails closed on missing or duplicate matches.
+* **Resumable Agent Stop:** Normal Agent stop must use the daemon checkpoint drain and preserve non-terminal durable work for startup recovery. `--force` is valid only for Agent-owning stop targets and requests bounded terminal cancellation; Client-only stop never accepts force.
+
+## 8. Agent Restart & Supervision Policy
+* **Supervised Daemon Restart**: When triggering agent restarts during development or debugging, always use the canonical `sanad-dev restart agent` command (which sends a `/restart` request) instead of manual OS-level process kills. The daemon is wrapped in a self-forking supervisor (`HotRestartManager`) that automatically handles child process exits, recompiles the source code from disk, and spawns a fresh process instantly.
+* **Restart Safety**: Agent restart waits for the daemon-owned all-session safety boundary. Timeout must leave the process running unless the caller explicitly selects force, and a failed safe restart must never fall back to process termination.
+* **Takeover Shutdown**: Manual-runtime takeover must cross the same safe checkpoint, then request a permanent supervised shutdown so the old source supervisor cannot respawn and race the new managed launcher.
+* **Restart Result Status**: Agent and client restart/reload commands must return a nonzero CLI status when transport, validation, attach, or explicit daemon success confirmation fails.
+* **Client Attach Identity**: Client restart/reload must recover the matched live Flutter process's argument vector from an OS-native lossless source, reuse its complete compile-time launch profile, and verify its worktree marker, branch, gateway port, plus the exact preferences namespace belonging to its canonical Sanad Home before attach. User and absolute home overrides remain valid when internally consistent. Missing or contradictory identity fails closed, except that a primary-checkout IDE client may resolve omitted gateway, home, and preferences defines to canonical primary defaults only when the matched daemon uses the canonical primary port and the runtime uses the canonical primary Sanad Home. Never override explicit values, tokenize a formatted process listing, inject a config argument, or use a global Flutter fallback.

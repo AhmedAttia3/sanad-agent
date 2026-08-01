@@ -1,0 +1,41 @@
+name: Documentation correction
+description: Report missing, inaccurate, or unclear public documentation
+title: "docs: "
+labels: ["needs-triage", "type/docs", "comp/docs"]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include secrets, private security details, personal paths, or user data.
+  - type: input
+    id: page
+    attributes:
+      label: Page or section
+      description: Provide a repository-relative path or public URL.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong or missing?
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Suggested correction
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      options: [English, Arabic, Both, Not language-specific]
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched for an existing report and verified the current page.
+          required: true

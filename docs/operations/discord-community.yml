@@ -1,0 +1,144 @@
+server:
+  # Owner decision (SANAD-10 user override, 2026-07-28): the canonical server
+  # display name is "Sanad Agent". The previous "Sanad Agent Community" label
+  # has been retired from public manifests and documentation.
+  name: Sanad Agent
+  discord_server_id: 1531380371588124724
+  permanent_invite: https://discord.gg/RPTJ2X9rn
+  permanent_invite_never_expires: true
+  permanent_invite_landing_channel: help-and-support
+  require_2fa_for_moderation: true
+  verification_level: medium
+  explicit_content_filter: all_members
+  default_notifications: mentions_only
+roles:
+  - name: Owner
+    managed_by: project_owner
+  - name: Maintainer
+    permissions: [manage_channels, manage_threads, moderate_members, view_audit_log]
+  - name: Moderator
+    permissions: [manage_messages, manage_threads, moderate_members, view_audit_log]
+  - name: Contributor
+    permissions: []
+  - name: Community Member
+    permissions: []
+  - name: Bots
+    permissions: [view_channels, send_messages, embed_links]
+categories:
+  - name: Start Here
+    channels:
+      - name: welcome
+        type: text
+        write: staff_only
+        notes: >
+          Only Owner/Maintainer/Moderator can post. @everyone has View Channel
+          = allow and Send Messages = deny. Used for a single pinned welcome
+          message maintained by the Owner.
+      - name: rules
+        type: text
+        write: staff_only
+        notes: >
+          Only Owner/Maintainer/Moderator can post. @everyone has View Channel
+          = allow and Send Messages = deny. Rules link to CODE_OF_CONDUCT.md
+          and the routing table below.
+      - name: announcements
+        type: text
+        write: maintainers_only
+        notes: >
+          #announcements is read-only for normal members. @everyone has Send
+          Messages = deny. Owner, Maintainer, Moderator, and Bots roles are
+          explicitly set to Send Messages = allow so GitHub release
+          announcements and similar can be cross-posted by the bot. A live
+          #github channel exists for the full feed; #announcements is the
+          curated subset the owner/maintainers publish by hand.
+  - name: Community
+    channels:
+      - {name: general, type: text}
+      - {name: arabic, type: text}
+      - {name: showcase, type: forum}
+  - name: Help
+    channels:
+      - name: help-and-support
+        type: forum
+        tags: [windows, macos, linux, android, ios, web, install, update]
+        notes: >
+          Forum channel. Tags are the canonical platform and lifecycle tags
+          used by the help triage workflow. Permanent invite lands here.
+  - name: Contributors
+    channels:
+      - {name: contributors, type: text}
+      - {name: development, type: text}
+      - name: github
+        type: text
+        write: integrations_only
+        notes: >
+          #github is the GitHub feed channel. Default @everyone role has
+          View Channel = allow and Send Messages = deny so the channel
+          functions as read-only for normal members. Bots role has
+          Send Messages = allow so the GitHub integration can post merged
+          pull requests, releases, and selected announcements.
+  - name: Moderation
+    private: true
+    visible_to_roles: [Owner, Maintainer, Moderator]
+    channels:
+      - {name: moderator-room, type: text}
+      - {name: moderation-audit, type: text}
+channel_overrides:
+  - channel: announcements
+    role: '@everyone'
+    send_messages: deny
+  - channel: announcements
+    role: Owner
+    send_messages: allow
+  - channel: announcements
+    role: Maintainer
+    send_messages: allow
+  - channel: announcements
+    role: Moderator
+    send_messages: allow
+  - channel: announcements
+    role: Bots
+    send_messages: allow
+  - channel: github
+    role: '@everyone'
+    send_messages: deny
+  - channel: github
+    role: Bots
+    send_messages: allow
+routing:
+  security: GitHub Private Vulnerability Reporting or security@eaststarai.com
+  conduct: community@eaststarai.com
+  reproducible_bug: GitHub Bug Report form
+  accepted_idea: GitHub Issue linked to its Discussion
+  durable_decision: Owning GitHub Discussion, Issue, plan, or documentation
+github_feed:
+  channel: github
+  include: [merged_pull_requests, releases, selected_announcements]
+  exclude: [raw_issue_firehose, raw_ci_firehose, security_reports]
+moderation:
+  ladder: [private_correction, warning, timeout, ban, private_appeal]
+  bots_must_not_have_administrator: true
+  permanent_invite_owner: project
+  invite_must_be_tested_before_publication: true
+deferred_owner_actions:
+  - Confirm Discord account email verification on community@eaststarai.com.
+  - Rotate community@eaststarai.com and security@eaststarai.com mailbox
+    passwords; rotate any exposed temporary credentials.
+  - Owner-account 2FA is enabled. Enforcing 2FA on future Maintainer and
+    Moderator accounts is intentionally outside SANAD-10 acceptance.
+  - Configure AutoMod, anti-spam, rate limits, and explicit content filter
+    in Server Settings -> Safety Setup. [done 2026-07-29 by owner session:
+    verification=medium, explicit_content_filter=all_members,
+    safety_notifications_channel=#moderation-audit, automod rules
+    enabled for mention-spam(5), suspected-spam, commonly-flagged-words
+    (all three categories) with alerts to #moderation-audit; banner
+    raise deferred — server is boost level 0 and discord gates
+    Server Banner Background behind Boost Level 2; see
+    docs/plans/tasks/sanad-10-public-candidate-community-and-governance.md
+    section 18 for the live evidence and screenshots in
+    docs/operations/discord-live-evidence/].
+  - Configure Zoho DKIM and DMARC and run a deliverability smoke test.
+  - Add the Sanad project icon and the announcement channel banner asset
+    once the brand assets are exported from SANAD-09.
+  - Open the permanent invite in a logged-out browser session to confirm
+    it lands in #help-and-support with no expiry banner.

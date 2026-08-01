@@ -1,0 +1,77 @@
+# Unified .gitignore for the Sanad Agent repository
+
+# Files and directories created by pub
+.dart_tool/
+.packages
+build/
+doc/api/
+
+# dotenv environment variables file
+.env
+.env.*
+!.env.example
+
+# Avoid committing generated Javascript files
+*.dart.js
+*.info.json
+*.js
+*.js_
+*.js.deps
+*.js.map
+
+# Flutter plugin registrants
+.flutter-plugins
+.flutter-plugins-dependencies
+generated_*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE configuration files
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
+.idea/
+*.iml
+
+# FVM Version Cache
+.fvm/
+
+# Private keys and release credentials
+*.pem
+!*dsa_pub.pem
+*.key
+dsa_priv.pem
+private_key.pem
+*.pem.bak
+
+# Packages folder
+packages/
+temp/
+refrence_projects/
+
+# Graphify files
+graphify-out/
+
+# Local Sanad agent permissions
+/.sanad/settings.json
+
+.codex/
+.agents/rules
+.agents/workflows
+
+# Generated release metadata and signing inputs
+appcast.xml
+release/release-manifest.json
+release/SHA256SUMS
+release/artifacts/
+release/sbom/
+*.p12
+*.p8
+*.jks
+*.keystore
+*.mobileprovision
+*.provisionprofile
+key.properties

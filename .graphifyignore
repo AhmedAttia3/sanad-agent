@@ -1,0 +1,46 @@
+# Exclude root folders we don't need
+refrence_projects/
+temp/
+.agent/
+.sanad/
+.vscode/
+appcast.xml
+
+# Exclude native platform runners and build folders in client
+client/android/
+client/ios/
+client/macos/
+client/linux/
+client/windows/
+client/web/
+client/build/
+client/.dart_tool/
+client/.flutter-plugins
+client/.flutter-plugins-dependencies
+client/macos/Flutter/ephemeral/
+client/ios/Flutter/ephemeral/
+client/macos/Pods/
+client/ios/Pods/
+client/ios/.symlinks/
+
+# Exclude build and IDE folders in agent
+agent/build/
+agent/.dart_tool/
+agent/.vscode/
+agent/.sanad/
+agent/temp/
+
+# Exclude generated code and mock files
+*.mocks.dart
+*.g.dart
+*.freezed.dart
+
+# Exclude images and PDFs explicitly
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.ico
+*.svg
+*.pdf

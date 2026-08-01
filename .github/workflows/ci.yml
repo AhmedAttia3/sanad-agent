@@ -1,0 +1,244 @@
+name: Public CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  classify:
+    name: Classify changed paths
+    runs-on: ubuntu-24.04
+    outputs:
+      agent: ${{ steps.paths.outputs.agent }}
+      client: ${{ steps.paths.outputs.client }}
+      docs: ${{ steps.paths.outputs.docs }}
+      release: ${{ steps.paths.outputs.release }}
+      security: ${{ steps.paths.outputs.security }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - id: paths
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          classification_failed=false
+          if [[ "$EVENT_NAME" == "pull_request" ]]; then
+            if ! git merge-base "$BASE_SHA" "$HEAD_SHA" >/dev/null ||
+              ! git diff --name-only "$BASE_SHA...$HEAD_SHA" > "$RUNNER_TEMP/changed"; then
+              classification_failed=true
+              : > "$RUNNER_TEMP/changed"
+            fi
+          elif ! git ls-files > "$RUNNER_TEMP/changed"; then
+            classification_failed=true
+            : > "$RUNNER_TEMP/changed"
+          fi
+          cat "$RUNNER_TEMP/changed"
+          agent=false; client=false; docs=false; release=false; security=false
+          while IFS= read -r path; do
+            case "$path" in agent/*|shared/*) agent=true ;; esac
+            case "$path" in client/*|shared/*) client=true ;; esac
+            case "$path" in *.md|docs/*|.vscode/*|.agents/*|.github/ISSUE_TEMPLATE/*|.github/DISCUSSION_TEMPLATE/*|.github/labels.yml|.github/CODEOWNERS|.github/PULL_REQUEST_TEMPLATE.md|scripts/community/*) docs=true ;; esac
+            case "$path" in .github/workflows/*|release/*|client/release/*|agent/tool/release_tool.dart|scripts/install.sh|scripts/install.ps1) release=true ;; esac
+            case "$path" in SECURITY.md|docs/operations/code_signing_policy.md|agent/lib/core/auth/*|agent/lib/core/auth/**/*|agent/lib/capabilities/permissions/*|agent/lib/capabilities/permissions/**/*) security=true ;; esac
+          done < "$RUNNER_TEMP/changed"
+          if [[ "$EVENT_NAME" != "pull_request" || "$classification_failed" == true ]] ||
+            [[ "$agent$client$docs$release$security" == falsefalsefalsefalsefalse ]]; then
+            echo "Classifier fallback: running every validation lane."
+            agent=true; client=true; docs=true; release=true; security=true
+          fi
+          {
+            echo "agent=$agent"
+            echo "client=$client"
+            echo "docs=$docs"
+            echo "release=$release"
+            echo "security=$security"
+          } >> "$GITHUB_OUTPUT"
+
+  history:
+    name: Verify branch history
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: git merge-base "$BASE_SHA" "$HEAD_SHA" >/dev/null
+
+  agent:
+    needs: classify
+    if: needs.classify.outputs.agent == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-fvm
+      - name: Validate release contract
+        working-directory: agent
+        run: |
+          fvm dart pub get
+          fvm dart run tool/release_tool.dart validate-contract --repo-root ..
+      - name: Analyze agent
+        working-directory: agent
+        run: fvm dart analyze
+      - name: Test agent
+        working-directory: agent
+        run: fvm dart test
+
+  client:
+    needs: classify
+    if: needs.classify.outputs.client == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-fvm
+      - name: Install Linux test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libasound2-dev
+      - name: Analyze client
+        working-directory: client
+        run: |
+          fvm flutter pub get
+          fvm flutter analyze
+      - name: Test client
+        working-directory: client
+        run: fvm flutter test
+
+  sanad-dev-platforms:
+    name: sanad-dev bootstrap (${{ matrix.os }})
+    needs: classify
+    if: needs.classify.outputs.client == 'true' || needs.classify.outputs.docs == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-fvm
+      - name: Verify bootstrap, journals, and terminal quoting without hosted traffic
+        working-directory: client
+        run: >-
+          fvm flutter test
+          test/unit/scripts/sanad_dev_bootstrap_test.dart
+          test/unit/scripts/sanad_dev_component_journal_test.dart
+          test/unit/scripts/sanad_dev_terminal_launcher_test.dart
+          test/unit/scripts/sanad_dev_command_options_test.dart
+          test/unit/scripts/sanad_dev_cloud_endpoints_test.dart
+
+  docs-governance:
+    name: Validate docs and governance
+    needs: classify
+    if: needs.classify.outputs.docs == 'true'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Validate community manifests and skills
+        run: ruby scripts/community/validate_governance.rb
+      - name: Validate tracked VS Code configuration
+        run: |
+          test "$(git ls-files '.vscode/*.json' | sort)" = $'.vscode/extensions.json\n.vscode/launch.json\n.vscode/tasks.json'
+          ruby -rjson -e 'ARGV.each { |path| JSON.parse(File.read(path)) }' .vscode/*.json
+          ! grep -R -E '/Users/|/Volumes/|[A-Za-z]:[/\\]' .vscode
+          ruby -rjson -e 'values = JSON.parse(File.read(".vscode/tasks.json")).fetch("tasks").flat_map { |task| [task["label"], task["command"], *Array(task["args"])] }.compact; abort("ownership-sensitive VS Code task") if values.any? { |value| value.match?(/\b(?:switch|stop|restart|takeover)\b|cleanup-target-orphans/i) }'
+      - name: Simulate contribution workflows
+        run: |
+          scripts/community/test_sync_labels.sh
+          ruby scripts/community/simulate_workflows.rb
+
+  release-security:
+    name: Validate release and security boundaries
+    needs: classify
+    if: needs.classify.outputs.release == 'true' || needs.classify.outputs.security == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Validate workflow trust boundaries
+        run: |
+          ! grep -R "[p]ull_request_target" .github/workflows
+          ! grep -R -E '[f]irebase|[g]oogle-services|[G]oogleService-Info' .github/workflows
+          ! git ls-files | grep -E '\.(p12|p8|jks|keystore|mobileprovision|provisionprofile)$'
+          ! git ls-files | grep -E '(^|/)dsa_priv\.pem$|(^|/)appcast\.xml$'
+      - name: Scan committed content for credentials
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  sensitive-review:
+    name: Verify protected review labels
+    needs: classify
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - if: github.event_name == 'pull_request'
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          LABELS_JSON: ${{ toJson(github.event.pull_request.labels.*.name) }}
+        run: |
+          set -euo pipefail
+          git diff --name-only "$BASE_SHA...$HEAD_SHA" > "$RUNNER_TEMP/changed"
+          has_label() { jq -e --arg label "$1" 'index($label) != null' <<< "$LABELS_JSON" >/dev/null; }
+          require_for_paths() {
+            local label="$1" pattern="$2"
+            if grep -Eq "$pattern" "$RUNNER_TEMP/changed" && ! has_label "$label"; then
+              echo "::error::Changed paths require the protected label $label"
+              return 1
+            fi
+          }
+          require_for_paths maintainer-reviewed '^(\.github/|GOVERNANCE\.md$|CONTRIBUTING\.md$|CODE_OF_CONDUCT\.md$)'
+          require_for_paths security-reviewed '^(SECURITY\.md$|agent/lib/core/auth/|agent/lib/capabilities/permissions/)'
+          require_for_paths release-reviewed '^(CODE_SIGNING_POLICY\.md$|release/|client/release/|scripts/install\.(sh|ps1)$|\.github/workflows/(release|deploy|testflight)\.yml$)'
+
+  all-required:
+    name: All required checks pass
+    if: always()
+    needs: [classify, history, agent, client, sanad-dev-platforms, docs-governance, release-security, sensitive-review]
+    runs-on: ubuntu-24.04
+    steps:
+      - env:
+          CLASSIFY: ${{ needs.classify.result }}
+          HISTORY: ${{ needs.history.result }}
+          AGENT: ${{ needs.agent.result }}
+          CLIENT: ${{ needs.client.result }}
+          SANAD_DEV_PLATFORMS: ${{ needs.sanad-dev-platforms.result }}
+          DOCS: ${{ needs.docs-governance.result }}
+          RELEASE_SECURITY: ${{ needs.release-security.result }}
+          SENSITIVE_REVIEW: ${{ needs.sensitive-review.result }}
+        run: |
+          set -euo pipefail
+          test "$CLASSIFY" = success
+          test "$HISTORY" = success
+          for result in "$AGENT" "$CLIENT" "$SANAD_DEV_PLATFORMS" "$DOCS" "$RELEASE_SECURITY"; do
+            [[ "$result" == success || "$result" == skipped ]]
+          done
+          test "$SENSITIVE_REVIEW" = success

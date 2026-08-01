@@ -1,0 +1,16 @@
+name: Set up project Flutter and FVM
+description: Installs the exact Flutter SDK declared by the repository and FVM.
+runs:
+  using: composite
+  steps:
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version-file: .fvmrc
+        cache: true
+    - shell: bash
+      run: |
+        export PUB_CACHE="$RUNNER_TEMP/pub-cache"
+        echo "PUB_CACHE=$PUB_CACHE" >> "$GITHUB_ENV"
+        dart pub global activate fvm
+        echo "$PUB_CACHE/bin" >> "$GITHUB_PATH"
+        dart pub global run fvm install

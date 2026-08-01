@@ -1,0 +1,126 @@
+---
+title: "Release, Signing, and Deployment Architecture"
+description: "The stable release pipeline, protected signing boundaries, artifact publication, and live-release handoff."
+---
+
+# Release, Signing, and Deployment Architecture
+
+## Release boundary
+
+The public `EastStarAI/sanad-agent` repository owns CI, artifact construction,
+signing orchestration, the release manifest, update-feed generation, and the
+canonical installer sources. The first stable release uses marketing version
+`1.0.0`, build number `1`, and tag `v1.0.0` for both Sanad Agent and Sanad
+Client.
+
+Pull-request CI is read-only and never receives signing or deployment
+credentials. Signing and deployment jobs use protected GitHub Environments,
+least-privilege permissions, immutable release assets, and explicit manual
+deployment inputs.
+
+## Artifact channels
+
+| Component | Target | Public channel | Authenticity boundary |
+|---|---|---|---|
+| Agent | macOS arm64/x64 | GitHub Release | Developer ID, notarization, and GitHub attestation |
+| Agent | Linux x64 | GitHub Release | SHA-256 plus GitHub attestation |
+| Agent | Windows x64 | GitHub Release | Unsigned Windows build; SHA-256, release manifest, and GitHub provenance |
+| Client | macOS universal | GitHub Release | Developer ID, notarization, Sparkle EdDSA |
+| Client | Linux x64 | GitHub Release | SHA-256 plus GitHub attestation |
+| Client | Windows x64 | GitHub Release | Unsigned Windows build; SHA-256, release manifest, and GitHub provenance |
+| Client | Android universal APK | GitHub Release | Android release signature |
+| Client | Android AAB | Private release handoff | Android release signature |
+| Client | iOS | Internal TestFlight only | Apple Distribution and provisioning profile |
+| Client | Web | EastStar AI server | Manifest checksum and atomic deployment |
+
+The exact filenames are defined in `release/release-contract.json`. Generated
+manifests, checksums, SBOMs, attestations, and Appcast files are release outputs,
+not source files.
+
+Android debug builds never require or consume the release keystore. Gradle only
+requires the external `android/key.properties` file when the requested task is
+a release task; a missing file must fail release configuration before an
+unsigned APK or AAB can be produced.
+
+## Protected environments
+
+| Environment | Responsibility |
+|---|---|
+| `release-build` | Non-secret release builds and candidate retention |
+| `apple-signing` | Developer ID signing, notarization, and Sparkle signing |
+| `apple-testflight` | Apple Distribution export and optional Internal TestFlight upload |
+| `windows-signing` | Reserved for post-v1 Authenticode/SignPath adoption; not required by the approved unsigned `1.0.0` policy |
+| `android-signing` | Android APK/AAB release signing |
+| `web-production` | Atomic Web deployment |
+| `updates-production` | Atomic Appcast deployment |
+| `installers-production` | Publishing canonical installer sources |
+
+Production environments require owner review. Forks and pull requests cannot
+enter them.
+
+## Secret inventory
+
+Secret values never belong in Git, documentation, logs, release archives, or
+unprotected artifacts.
+
+| Secret name | Purpose | Owner and rotation |
+|---|---|---|
+| `MACOS_DEVELOPER_ID_P12_BASE64` / `MACOS_DEVELOPER_ID_P12_PASSWORD` | macOS application and agent signing | NanoSoft LY LLC; rotate on expiry, compromise, or publisher change |
+| `APPLE_API_PRIVATE_KEY_P8_BASE64` / `APPLE_API_KEY_ID` / `APPLE_API_ISSUER_ID` | notarization and App Store Connect uploads | NanoSoft LY LLC; scoped CI key, revoke and replace on compromise |
+| `APPLE_DISTRIBUTION_P12_BASE64` / `APPLE_DISTRIBUTION_P12_PASSWORD` | iOS distribution signing | NanoSoft LY LLC; rotate on expiry or compromise |
+| `IOS_APP_STORE_PROFILE_BASE64` | `com.eaststarai.sanad` App Store profile | NanoSoft LY LLC; regenerate when certificate, entitlement, or App ID changes |
+| `WINDOWS_SIGNING_PFX_BASE64` / `WINDOWS_SIGNING_PFX_PASSWORD` | Windows Authenticode signing | Release owner; not yet available for v1 |
+| `ANDROID_KEYSTORE_BASE64` / passwords / `ANDROID_KEY_ALIAS` | Android APK/AAB signing | Release owner; retain encrypted recovery copy for the lifetime of the package ID |
+| `SPARKLE_ED25519_PRIVATE_KEY_BASE64` | macOS update signatures | Release owner; rotate only with a documented public-key transition |
+| `WINSPARKLE_DSA_PRIVATE_KEY_BASE64` | Windows update signatures | Release owner; rotate only with a documented public-key transition |
+| `DEPLOY_SSH_PRIVATE_KEY` / host / user / known-hosts | Web, Appcast, and installer deployment | Server operator; dedicated restricted account and pinned host key |
+
+`GITHUB_TOKEN` is workflow-scoped and receives only the permissions declared by
+the owning job.
+
+## Apple publisher
+
+Apple signing and Internal TestFlight distribution use the NanoSoft LY LLC
+team. The display name is `Sanad` and the bundle identifier is
+`com.eaststarai.sanad`. The App Store Connect record is named `Sanad Remote`
+because the shorter product names were unavailable; this does not change the
+installed display name. Internal TestFlight is the only iOS distribution
+channel for the first release; external testing and App Store review are a
+separate future decision.
+
+## Atomic publication and rollback
+
+The GitHub Release is immutable: a rerun must fail if the tag already owns a
+release. Public release files use published checksums. The private Web handoff
+is downloaded from the explicitly selected successful release-workflow run and
+verified against its GitHub build attestation. Server deployment then writes a
+versioned directory and changes a `current` symlink only after the transfer
+succeeds. Rollback switches that symlink to the last known good version; it
+does not rebuild or mutate a published release.
+
+Web assets use content-hashed Flutter output plus a small no-cache
+`version.json`. The server must route unknown application paths to
+`index.html`, serve immutable hashed assets with long-lived caching, and serve
+the shell, version marker, and Appcast without stale caching.
+
+## Readiness and live handoff
+
+Local verification proves the release contract, manifest/checksum generation,
+macOS universal packaging and Developer ID signatures, iOS signed export,
+Sparkle signatures, Web packaging, analyzers, and updater tests.
+
+The following remain live-release gates:
+
+- SANAD-12 must adapt the currently fail-closed Windows signing steps to publish
+  the approved `Unsigned Windows build` for `1.0.0`, retain manifest/checksum/
+  provenance verification, add the disclosure to release surfaces, and test
+  Defender and SmartScreen on Windows 10 and 11;
+- use the completed App Store Connect API key and application record for
+  Internal TestFlight upload; local notarization, staple, and Gatekeeper
+  verification have already passed;
+- populate protected GitHub Environments after the public repository exists;
+- run hosted Actions, publish the immutable release, deploy Web/Appcast/
+  installers, and exercise real upgrade and rollback paths.
+
+Those actions are owned by the later public-release task and do not weaken the
+prepared workflows.

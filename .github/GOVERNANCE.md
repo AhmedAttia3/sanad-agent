@@ -1,0 +1,50 @@
+# Sanad Agent Governance
+
+Sanad Agent is an open-source project created by Ahmed Attia and developed under EastStar AI, an independent AI studio. EastStar AI is a public operating name, not a separately registered legal company.
+
+## Decision and Work Channels
+
+| Channel | Owns | Does not own |
+|---|---|---|
+| Discord | Help, community conversation, showcases, and announcements | Durable technical decisions, vulnerabilities, or work status |
+| GitHub Discussions | Ideas, requests for comment, and architectural Q&A before adoption | Daily implementation status |
+| GitHub Issues and Projects | Actionable work, priority, assignee, milestone, and dependencies | Durable architecture documentation |
+| `docs/plans/tasks/` | Scope, decisions, risks, gates, and acceptance for large or high-risk changes | Live assignment or project status |
+| Product and technical documentation | Current behavior and design after merge | Backlog |
+| Pull requests | Implementation diff, evidence, and review | Open-ended ideation |
+
+A Discord idea becomes durable only after it is recorded in a Discussion, Issue, or owning document. Votes inform decisions but do not replace a maintainer decision.
+
+## When a Repository Plan Is Required
+
+An Issue is enough for focused work. Add a tracked plan when a change affects a public protocol or API, schema or migration, security or privacy boundary, release/signing/update/install contract, architecture across components, a major UX workflow, or several coordinated pull requests.
+
+The normal large-change route is Discussion, Epic Issue, one task plan, child Issues, then focused pull requests. The Epic closes only after its evidence and acceptance gates pass.
+
+## Roles and Authority
+
+Ahmed Attia (`@AhmedAttia3`) is the initial project owner, maintainer, CODEOWNER, release approver, and final decision maker. Maintainers may triage work, review code, apply protected review labels, merge approved changes, moderate official spaces, and publish releases within their granted permissions.
+
+Contributors retain copyright in their contributions unless applicable law says otherwise. No contributor license agreement or Developer Certificate of Origin is required. By submitting a contribution, a contributor agrees that it may be distributed under the repository's MIT License and represents that they have the right to submit it.
+
+Automated tools may help prepare a contribution, but authorship is attributed to the human contributors through Git history, `Co-authored-by` trailers where appropriate, and release notes—not to an AI tool.
+
+## Pull Requests and Protected Changes
+
+Direct and force pushes to `main` are prohibited. Human pull requests use squash merge only. The pull-request title must follow Conventional Commits and becomes the squash commit message. Required CI must pass and review conversations must be resolved.
+
+During the single-maintainer phase, GitHub does not impose a general approval count. Sensitive changes instead require a protected positive-review label from a user with triage or write access:
+
+- `maintainer-reviewed` for repository governance and `.github/` changes;
+- `security-reviewed` for authentication, credentials, and security boundaries;
+- `release-reviewed` for release, signing, installer, and updater paths.
+
+The author of an external pull request cannot satisfy these gates. When the first independent maintainer joins, branch protection moves to at least one approval and required CODEOWNERS review while retaining sensitive-path gates where useful.
+
+The owner may bypass normal protection only for an urgent security incident or release recovery. The reason, diff, and follow-up verification must be recorded in an Issue or pull request as soon as disclosure permits.
+
+## Decision Changes and Appeals
+
+Maintainers record durable decisions in the owning Issue, Discussion, plan, or documentation. A materially changed decision should explain why prior guidance no longer applies.
+
+Conduct moderation and appeals follow [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Security reports follow [SECURITY.md](../SECURITY.md). General help follows [SUPPORT.md](SUPPORT.md).

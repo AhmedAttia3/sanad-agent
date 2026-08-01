@@ -1,0 +1,22 @@
+# Local handoff manifest for SANAD-11. GitHub category IDs are assigned live.
+categories:
+  - slug: announcements
+    name: Announcements
+    description: Maintainer-authored project and release announcements
+    format: announcement
+    maintainers_only: true
+  - slug: ideas-rfcs
+    name: Ideas & RFCs
+    description: Product ideas and substantial design proposals before adoption
+    format: open-ended
+    maintainers_only: false
+  - slug: q-a
+    name: Q&A
+    description: Technical questions that are not confirmed bugs
+    format: question-answer
+    maintainers_only: false
+  - slug: show-and-tell
+    name: Show and Tell
+    description: Community integrations, skills, workflows, and experiments
+    format: open-ended
+    maintainers_only: false
