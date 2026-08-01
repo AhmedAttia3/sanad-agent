@@ -15,7 +15,11 @@ are missing, or generated metadata is not deterministic.
 CI and source audits must also prove that no Firebase dependency removed for v1
 has returned, no private signing material is tracked, the generated Appcast is
 untracked, and pull-request workflows cannot access signing or deployment
-environments.
+environments. The shared FVM setup must activate FVM in its isolated
+`PUB_CACHE`, then invoke the explicit `fvm:main` package entrypoint through
+Dart. This keeps bootstrap portable when Windows exposes `PUB_CACHE` as a
+Git-Bash-incompatible drive path and avoids the implicit package entrypoint
+that is absent from current FVM releases.
 
 ## Platform matrix
 
