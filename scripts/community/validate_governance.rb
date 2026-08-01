@@ -124,5 +124,19 @@ end
 fail_validation('aggregate check name is unstable') unless workflow.include?('name: All required checks pass')
 fail_validation('CI must rerun review gates when labels change') unless workflow.include?('labeled') && workflow.include?('unlabeled')
 fail_validation('fork PRs must not use pull_request_target') if workflow.include?('pull_request_target')
+fail_validation('CI must not require the organization-licensed Gitleaks Action') if workflow.include?('gitleaks/gitleaks-action') || workflow.include?('GITLEAKS_LICENSE')
+fail_validation('Gitleaks archive must be checksum verified before execution') unless workflow.include?('sha256sum --check')
+fail_validation('Gitleaks scan must use the reviewed config, redact findings, and scan the checked-out source') unless workflow.include?('gitleaks" detect --source . --config .gitleaks.toml --redact --no-banner')
+
+gitleaks_config = File.read(File.join(ROOT, '.gitleaks.toml'))
+fail_validation('Gitleaks config must extend the default rules') unless gitleaks_config.include?('useDefault = true')
+fail_validation('Gitleaks fixture allowlist must be limited to generic API-key findings') unless gitleaks_config.include?('rules = ["generic-api-key"]')
+%w[
+  agent/test/core/provider_runtime/provider_instance_service_test\\.dart
+  agent/test/core/secrets_redactor_test\\.dart
+  agent/test/interfaces/interfaces_test\\.dart
+].each do |fixture|
+  fail_validation("Gitleaks config is missing reviewed fixture #{fixture}") unless gitleaks_config.include?(fixture)
+end
 
 puts "Governance artifacts valid: #{labels.length} labels, #{yaml_paths.length} YAML files, #{skills.length} contribution skills."

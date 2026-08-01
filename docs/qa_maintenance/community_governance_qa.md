@@ -15,7 +15,7 @@ description: "Static and live verification matrix for labels, templates, contrib
 | Discussions | Categories and templates distinguish Ideas & RFCs, Q&A, Show and Tell, and maintainer-only announcements |
 | PR template | Linked Issue, bounded verification, platforms, security/privacy, docs, screenshots, rollback, duplicates, and optional AI disclosure are covered |
 | Skills | Frontmatter is valid, repository paths resolve, no active skill mentions the retired project manager, and every sensitive mutation requires explicit authorization |
-| CI | Path classifier, common-ancestor check, protected labels, label-event reruns, fork-safe permissions, and the stable aggregate job are present |
+| CI | Path classifier, common-ancestor check, protected labels, label-event reruns, fork-safe permissions, stable aggregate job, and checksum-verified secret scanning without organization-license secrets are present; only exact reviewed synthetic credential-test paths are allowlisted |
 | VS Code | The three tracked JSON files parse, remain allowlisted, contain no machine paths, and expose no shortcuts for ownership-sensitive runtime mutations |
 | Governance text | No CLA/DCO/sign-off requirement remains in active public guidance; single-maintainer and independent-maintainer protection modes are explicit |
 | Brand assets | README has no unapproved interface screenshot; unconsumed legacy logos are absent; build-required icons stay present until an approved canonical source can replace them atomically |

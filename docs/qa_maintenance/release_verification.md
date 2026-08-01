@@ -21,6 +21,15 @@ Dart. This keeps bootstrap portable when Windows exposes `PUB_CACHE` as a
 Git-Bash-incompatible drive path and avoids the implicit package entrypoint
 that is absent from current FVM releases.
 
+The credential scan runs the pinned open-source Gitleaks CLI directly rather
+than the organization-licensed GitHub Action. CI downloads the official Linux
+archive over HTTPS, verifies its pinned SHA-256 before extraction, scans the
+complete checked-out Git history with redaction enabled, and requires no
+repository secret or commercial license. The tracked configuration extends the
+default rules and narrowly allows only the reviewed `generic-api-key` fixtures
+in three exact credential/redaction test files; production paths and all other
+rules remain fail-closed.
+
 ## Platform matrix
 
 | Target | Local evidence | Hosted or clean-machine evidence still required |
