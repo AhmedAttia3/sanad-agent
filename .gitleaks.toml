@@ -1,0 +1,11 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Synthetic generic API-key fixtures used by credential and redaction tests"
+rules = ["generic-api-key"]
+paths = [
+  '''^agent/test/core/provider_runtime/provider_instance_service_test\.dart$''',
+  '''^agent/test/core/secrets_redactor_test\.dart$''',
+  '''^agent/test/interfaces/interfaces_test\.dart$''',
+]
